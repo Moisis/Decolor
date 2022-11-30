@@ -17,12 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
   , scribbleArea(new ScribbleArea(this))
 {
-
-ui->setupUi(this);
-this->setCentralWidget(scribbleArea);
-scribbleArea->setDrawingShape("None");
-
-
+    ui->setupUi(this);
+    this->setCentralWidget(scribbleArea);
+    scribbleArea->setDrawingShape("None");
+    scribbleArea->clearImage();
 }
 
 
@@ -73,60 +71,55 @@ bool MainWindow::saveFile(const QByteArray &fileFormat)
 
 void MainWindow::on_actionCircle_triggered()
 {
-
     scribbleArea->setDrawingShape("circle");
     ui->actionCursor->setChecked(false);
-     ui->actionSquare->setChecked(false);
-      ui->actionLine->setChecked(false);
-       ui->actionFill->setChecked(false);
-       ui->actionpencil->setChecked(false);
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionpencil->setChecked(false);
 }
 
 
 void MainWindow::on_actionCursor_triggered()
 {
-
     ui->actionCircle->setChecked(false);
-     ui->actionSquare->setChecked(false);
-      ui->actionLine->setChecked(false);
-       ui->actionFill->setChecked(false);
-       ui->actionpencil->setChecked(false);
-         scribbleArea->setDrawingShape("None");
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionpencil->setChecked(false);
+    scribbleArea->setDrawingShape("None");
 }
 
 
 void MainWindow::on_actionLine_triggered()
 {
-
-       ui->actionpencil->setChecked(false);
+    ui->actionpencil->setChecked(false);
     ui->actionCursor->setChecked(false);
-     ui->actionSquare->setChecked(false);
-      ui->actionCircle->setChecked(false);
-       ui->actionFill->setChecked(false);
-        scribbleArea->setDrawingShape("line");
+    ui->actionSquare->setChecked(false);
+    ui->actionCircle->setChecked(false);
+    ui->actionFill->setChecked(false);
+    scribbleArea->setDrawingShape("line");
 
 }
 
 
 void MainWindow::on_actionFill_triggered()
 {
-
     ui->actionCursor->setChecked(false);
-     ui->actionSquare->setChecked(false);
-      ui->actionCircle->setChecked(false);
-       ui->actionLine->setChecked(false);
+    ui->actionSquare->setChecked(false);
+    ui->actionCircle->setChecked(false);
+    ui->actionLine->setChecked(false);
 }
 
 
 void MainWindow::on_actionSquare_triggered()
 {
-
     ui->actionCursor->setChecked(false);
-     ui->actionFill->setChecked(false);
-      ui->actionCircle->setChecked(false);
-       ui->actionLine->setChecked(false);
-       ui->actionpencil->setChecked(false);
-scribbleArea->setDrawingShape("rect");
+    ui->actionFill->setChecked(false);
+    ui->actionCircle->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionpencil->setChecked(false);
+    scribbleArea->setDrawingShape("rect");
 
 }
 
@@ -159,7 +152,7 @@ scribbleArea->print();
 
 void MainWindow::on_actionExit_triggered()
 {
-this->close();
+    this->close();
 }
 
 
@@ -186,7 +179,7 @@ void MainWindow::on_actionPen_Width_triggered()
 void MainWindow::on_actionClear_Screen_triggered()
 {
     scribbleArea->setDrawingShape("None");
-scribbleArea->clearImage();
+    scribbleArea->clearImage();
 }
 
 
@@ -194,11 +187,11 @@ scribbleArea->clearImage();
 void MainWindow::on_actionpencil_triggered()
 {
     ui->actionCircle->setChecked(false);
-     ui->actionSquare->setChecked(false);
-      ui->actionLine->setChecked(false);
-       ui->actionFill->setChecked(false);
-        ui->actionCursor->setChecked(false);
-         scribbleArea->setDrawingShape("free");
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionCursor->setChecked(false);
+    scribbleArea->setDrawingShape("free");
 }
 
 

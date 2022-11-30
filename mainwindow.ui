@@ -71,7 +71,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="font">
@@ -173,6 +173,9 @@
    <property name="text">
     <string>Cursor</string>
    </property>
+   <property name="shortcut">
+    <string>1</string>
+   </property>
   </action>
   <action name="actionLine">
    <property name="checkable">
@@ -184,6 +187,9 @@
    </property>
    <property name="text">
     <string>Line</string>
+   </property>
+   <property name="shortcut">
+    <string>3</string>
    </property>
   </action>
   <action name="actionSquare">
@@ -197,6 +203,9 @@
    <property name="text">
     <string>Square</string>
    </property>
+   <property name="shortcut">
+    <string>4</string>
+   </property>
   </action>
   <action name="actionCircle">
    <property name="checkable">
@@ -209,6 +218,9 @@
    <property name="text">
     <string>Circle</string>
    </property>
+   <property name="shortcut">
+    <string>5</string>
+   </property>
   </action>
   <action name="actionFill">
    <property name="checkable">
@@ -220,6 +232,9 @@
    </property>
    <property name="text">
     <string>Fill</string>
+   </property>
+   <property name="shortcut">
+    <string>6</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -289,6 +304,9 @@
    </property>
    <property name="text">
     <string>pencil</string>
+   </property>
+   <property name="shortcut">
+    <string>2</string>
    </property>
   </action>
   <action name="actionAbout_Project">

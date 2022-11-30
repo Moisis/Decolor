@@ -67,7 +67,6 @@
 
 
 
-//! [0]
 ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
 {
@@ -75,11 +74,8 @@ ScribbleArea::ScribbleArea(QWidget *parent)
 
 
 }
-//! [0]
 
-//! [1]
 bool ScribbleArea::openImage(const QString &fileName)
-//! [1] //! [2]
 {
     QImage loadedImage;
     if (!loadedImage.load(fileName))
@@ -92,11 +88,7 @@ bool ScribbleArea::openImage(const QString &fileName)
     update();
     return true;
 }
-//! [2]
-
-//! [3]
 bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
-//! [3] //! [4]
 {
     QImage visibleImage = image;
     resizeImage(&visibleImage, size());
@@ -107,31 +99,24 @@ bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
     }
     return false;
 }
-//! [4]
-
-//! [5]
 void ScribbleArea::setPenColor(const QColor &newColor)
-//! [5] //! [6]
 {
     myPenColor = newColor;
 }
 
 void ScribbleArea::setPenWidth(int newWidth)
-
 {
     myPenWidth = newWidth;
 }
 
 void ScribbleArea::clearImage()
-
 {
-    image.fill(qRgb(255, 255, 255));
+    image.fill(qRgb(0, 0, 0));
     modified = false;
     update();
 }
-//! [12] //! [13]
+
 void ScribbleArea::paintEvent(QPaintEvent *event)
-//! [13] //! [14]
 {
     QPainter painter(this);
     QRect dirtyRect = event->rect();
@@ -139,6 +124,7 @@ void ScribbleArea::paintEvent(QPaintEvent *event)
     if (!begin.isNull() && !dest.isNull()) {
         painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                 Qt::RoundJoin));
+        painter.setRenderHint(QPainter::Antialiasing);
         switch(myDrawingShape) {
             case Rect: {
                 QRect rect = QRect(begin, dest);
@@ -159,11 +145,8 @@ void ScribbleArea::paintEvent(QPaintEvent *event)
         }
     }
 }
-//! [14]
 
-//! [15]
 void ScribbleArea::resizeEvent(QResizeEvent *event)
-//! [15] //! [16]
 {
     if (width() > image.width() || height() > image.height()) {
         int newWidth = qMax(width() + 128, image.width());
@@ -188,9 +171,7 @@ void ScribbleArea::setDrawingShape(std::string dShape) {
     }
 }
 
-//! [11]
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
-//! [11] //! [12]
 {
     if (event->button() == Qt::LeftButton) {
 
@@ -204,7 +185,6 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
 
 void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
 {
-
     if(myDrawingShape == DrawingShape::HandDrawing) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             drawLineTo(event->pos());
@@ -267,15 +247,6 @@ void ScribbleArea::drawLine(const QPoint &endPoint) {
     lastPoint = endPoint;
 }
 
-/* helper function to get me the smaller between two points important when drwaing a trinagle */
-QPoint ScribbleArea::smaller(const QPoint &lastPoint, const QPoint &endPoint) {
-    if (lastPoint.x() < endPoint.x() && lastPoint.y() < endPoint.y()) {
-        return lastPoint;
-    } else {
-        return endPoint;
-    }
-}
-
 void ScribbleArea::drawRect(const QPoint &endPoint) {
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -288,7 +259,6 @@ void ScribbleArea::drawRect(const QPoint &endPoint) {
     int rad = (myPenWidth / 2) + 2;
     update(QRect(lastPoint, endPoint).normalized()
                                    .adjusted(-rad, -rad, +rad, +rad));
-
 }
 
 void ScribbleArea::drawEllipse(const QPoint &endPoint) {
@@ -303,15 +273,9 @@ void ScribbleArea::drawEllipse(const QPoint &endPoint) {
     int rad = (myPenWidth / 2) + 2;
    update(QRect(lastPoint, endPoint).normalized()
                                     .adjusted(-rad, -rad, +rad, +rad));
-
-
 }
 
-
-
-
 void ScribbleArea::drawLineTo(const QPoint &endPoint)
-
 {
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -323,15 +287,11 @@ void ScribbleArea::drawLineTo(const QPoint &endPoint)
     update(QRect(lastPoint, endPoint).normalized()
                                      .adjusted(-rad, -rad, +rad, +rad));
 
-
     lastPoint = endPoint;
 
 }
-//! [18]
 
-//! [19]
 void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
-//! [19] //! [20]
 {
     if (image->size() == newSize)
         return;
