@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/cursor.png</file>
+        <file>img/dry-clean.png</file>
+        <file>img/remove.png</file>
+        <file>img/stop.png</file>
+        <file>img/paint-bucket.png</file>
+        <file>img/pencil.png</file>
+    </qresource>
+</RCC>
