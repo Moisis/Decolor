@@ -104,6 +104,9 @@ void ScribbleArea::setPenWidth(int newWidth)
     myPenWidth = newWidth;
 }
 
+/*************************
+ *         Omar          *
+ *************************/
 void ScribbleArea::clearImage()
 {
     image.fill(qRgb(0, 0, 0));
@@ -296,10 +299,7 @@ void ScribbleArea::floodFill() {
             int nx = x + dx[i];
             int ny = y + dy[i];
             QColor newColor = image.pixelColor(nx, ny);
-            if (!isValidImageIndex(nx, ny)) {
-                continue;
-            }
-            else if (isValidImageIndex(nx, ny) && newColor == eventColor) {
+            if (newColor == eventColor) {
                 points.push(QPoint(nx, ny));
                 image.setPixelColor(nx, ny, myPenColor);
                 update();
@@ -340,7 +340,7 @@ void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
     if (image->size() == newSize)
         return;
     QImage newImage(newSize, QImage::Format_RGB32);
-    newImage.fill(qRgb(255, 255, 255));
+    newImage.fill(qRgb(0, 0, 0));
     QPainter painter(&newImage);
     painter.drawImage(QPoint(0, 0), *image);
     *image = newImage;
