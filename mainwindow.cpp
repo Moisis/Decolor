@@ -45,7 +45,7 @@ bool MainWindow::maybeSave()
 {
     if (scribbleArea->isModified()) {
        QMessageBox::StandardButton ret;
-       ret = QMessageBox::warning(this, tr("Scribble"),
+       ret = QMessageBox::warning(this, tr("Decolor"),
                           tr("The image has been modified.\n"
                              "Do you want to save your changes?"),
                           QMessageBox::Save | QMessageBox::Discard
