@@ -53,6 +53,8 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <iostream>
+#include <QDebug>
+#include <queue>
 
 #if defined(QT_PRINTSUPPORT_LIB)
 #include <QtPrintSupport/qtprintsupportglobal.h>
@@ -71,34 +73,27 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
 {
     setAttribute(Qt::WA_StaticContents);
-
-
 }
 
-bool ScribbleArea::openImage(const QString &fileName)
-{
-    QImage loadedImage;
-    if (!loadedImage.load(fileName))
-        return false;
 
-    QSize newSize = loadedImage.size().expandedTo(size());
-    resizeImage(&loadedImage, newSize);
-    image = loadedImage;
-    modified = false;
-    update();
-    return true;
-}
-bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
-{
-    QImage visibleImage = image;
-    resizeImage(&visibleImage, size());
+/*-----------------------------------------------------------------Setters------------------------------------------------------------------------*/
 
-    if (visibleImage.save(fileName, fileFormat)) {
-        modified = false;
-        return true;
+void ScribbleArea::setDrawingShape(std::string dShape) {
+    if (dShape == "line") {
+       tool = Tools::Line;
+    } else if (dShape == "rect") {
+       tool = Tools::Rect;
+    } else if (dShape == "circle") {
+       tool = Tools::Circle;
+    } else if (dShape == "free") {
+       tool = Tools::Pencil;
+    } else if(dShape == "fill"){
+       tool = Tools::Fill;
+    } else {
+       tool = Tools::None;
     }
-    return false;
 }
+
 void ScribbleArea::setPenColor(const QColor &newColor)
 {
     myPenColor = newColor;
@@ -125,7 +120,7 @@ void ScribbleArea::paintEvent(QPaintEvent *event)
         painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                 Qt::RoundJoin));
         painter.setRenderHint(QPainter::Antialiasing);
-        switch(myDrawingShape) {
+        switch(tool) {
             case Rect: {
                 QRect rect = QRect(begin, dest);
                 painter.drawRect(rect.normalized());
@@ -157,35 +152,28 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 
-void ScribbleArea::setDrawingShape(std::string dShape) {
-    if (dShape == "line") {
-       myDrawingShape = DrawingShape::Line;
-    } else if (dShape == "rect") {
-       myDrawingShape = DrawingShape::Rect;
-    } else if (dShape == "circle") {
-       myDrawingShape = DrawingShape::Circle;
-    } else if (dShape == "free") {
-       myDrawingShape = DrawingShape::HandDrawing;
-    }else{
-       myDrawingShape = DrawingShape::None;
-    }
-}
 
+/*-----------------------------------------------------------------Mouse Event handling---------------------------------------------------------*/
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-
+    if (event->button() == Qt::LeftButton && tool == Tools::Fill) {
+        lastPoint = event->pos();
+        points.push(QPoint(event->pos().x(), event->pos().y()));
+        eventColor = image.pixelColor(event->pos().x(), event->pos().y());
+        floodFill();
+        scribbling = true;
+    } else if(event->button() == Qt::LeftButton) {
         begin = event->pos();
         dest = begin;
         lastPoint = event->pos();
         scribbling = true;
-        }
     }
+}
 
 
 void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
 {
-    if(myDrawingShape == DrawingShape::HandDrawing) {
+    if(tool == Tools::Pencil) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             drawLineTo(event->pos());
     } else {
@@ -199,27 +187,27 @@ void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
 
 void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (myDrawingShape == DrawingShape::HandDrawing) {
+    if (tool == Tools::Pencil) {
         if (event->button() == Qt::LeftButton && scribbling) {
             drawLineTo(event->pos());
             scribbling = false;
 
         }
     }
-    else if (myDrawingShape == DrawingShape::Line) {
+    else if (tool == Tools::Line) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
             drawLine(event->pos());
             scribbling = false;
 
         }
     }
-    else if (myDrawingShape == DrawingShape::Rect) {
+    else if (tool == Tools::Rect) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
             drawRect(event->pos());
             scribbling = false;
 
         }
-    } else if (myDrawingShape == DrawingShape::Circle) {
+    } else if (tool == Tools::Circle) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
             drawEllipse(event->pos());
             scribbling = false;
@@ -228,6 +216,9 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+/*---------------------------------------------------------------------Tools functions------------------------------------------------------------*/
+
+/*Line tool*/
 void ScribbleArea::drawLine(const QPoint &endPoint) {
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -247,6 +238,7 @@ void ScribbleArea::drawLine(const QPoint &endPoint) {
     lastPoint = endPoint;
 }
 
+/*Rect tool*/
 void ScribbleArea::drawRect(const QPoint &endPoint) {
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -261,6 +253,7 @@ void ScribbleArea::drawRect(const QPoint &endPoint) {
                                    .adjusted(-rad, -rad, +rad, +rad));
 }
 
+/*Circle tool*/
 void ScribbleArea::drawEllipse(const QPoint &endPoint) {
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -274,7 +267,7 @@ void ScribbleArea::drawEllipse(const QPoint &endPoint) {
    update(QRect(lastPoint, endPoint).normalized()
                                     .adjusted(-rad, -rad, +rad, +rad));
 }
-
+/* Pencil tool */
 void ScribbleArea::drawLineTo(const QPoint &endPoint)
 {
     QPainter painter(&image);
@@ -289,6 +282,57 @@ void ScribbleArea::drawLineTo(const QPoint &endPoint)
 
     lastPoint = endPoint;
 
+}
+
+void ScribbleArea::floodFill() {
+    std::array<int, 4> dx = {0, 1, 0, -1};
+    std::array<int, 4> dy = {1, 0, -1, 0};
+
+    while(!points.empty()) {
+        int x = points.front().x();
+        int y = points.front().y();
+        points.pop();
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            QColor newColor = image.pixelColor(nx, ny);
+            if (!isValidImageIndex(nx, ny)) {
+                continue;
+            }
+            else if (isValidImageIndex(nx, ny) && newColor == eventColor) {
+                points.push(QPoint(nx, ny));
+                image.setPixelColor(nx, ny, myPenColor);
+                update();
+            }
+        }
+    }
+}
+/*--------------------------------------------------------------------Misc------------------------------------------------------------------------*/
+
+bool ScribbleArea::openImage(const QString &fileName)
+{
+    QImage loadedImage;
+    if (!loadedImage.load(fileName))
+        return false;
+
+    QSize newSize = loadedImage.size().expandedTo(size());
+    resizeImage(&loadedImage, newSize);
+    image = loadedImage;
+    modified = false;
+    update();
+    return true;
+}
+
+bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
+{
+    QImage visibleImage = image;
+    resizeImage(&visibleImage, size());
+
+    if (visibleImage.save(fileName, fileFormat)) {
+        modified = false;
+        return true;
+    }
+    return false;
 }
 
 void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
@@ -320,3 +364,8 @@ void ScribbleArea::print()
 #endif // QT_CONFIG(printdialog)
 }
 
+
+/*--------------------------------------------------------------------------Helper functions------------------------------------------------------*/
+bool ScribbleArea::isValidImageIndex(int x, int y) {
+    return x >= 0 && y >= 0 && x < image.width() && y < image.height();
+}

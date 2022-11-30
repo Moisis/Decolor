@@ -55,8 +55,9 @@
 #include <QImage>
 #include <QPoint>
 #include <QWidget>
-#include<QRect>
-#include<QStack>
+#include <QRect>
+#include <QStack>
+#include <queue>
 //! [0]
 class ScribbleArea : public QWidget
 {
@@ -64,26 +65,25 @@ class ScribbleArea : public QWidget
 
 public:
     ScribbleArea(QWidget *parent = nullptr);
-    enum DrawingShape {
-        HandDrawing,
+    enum Tools {
+        Pencil,
         Line,
         Rect,
         Circle,
+        Fill,
         None,
     };
 
     bool openImage(const QString &fileName);
     bool saveImage(const QString &fileName, const char *fileFormat);
+    bool isModified() const { return modified; }
     void setPenColor(const QColor &newColor);
     void setPenWidth(int newWidth);
     void setDrawingShape(std::string sh);
-    bool isModified() const { return modified; }
     void setLastRect(const QPoint &p1, const QPoint &p2);
-    QColor penColor() const { return myPenColor; }
-    QPoint begin = QPoint();
-    QPoint dest = QPoint();
     int penWidth() const { return myPenWidth; }
     QStack <QWidget> st1;
+    QColor penColor() const { return myPenColor; }
 
 public slots:
     void clearImage();
@@ -96,21 +96,34 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
+/*Tools functions*/
 private:
     void drawLineTo(const QPoint &endPoint);
     void drawLine(const QPoint &endPoint);
     void drawRect(const QPoint &endPoint);
     void drawEllipse(const QPoint &endPoint);
     void resizeImage(QImage *image, const QSize &newSize);
-    QPoint smaller(const QPoint &lastPoint, const QPoint &endPoint);
-    bool modified = false;
-    DrawingShape myDrawingShape = DrawingShape::Rect;
+    void floodFill();
+
+
+/* Helper functions */
+private:
+    bool isValidImageIndex(int x, int y);
+
+
+/* private members*/
+private:
+    std::queue<QPoint> points;
+    Tools tool = Tools::Rect;
     bool scribbling = false;
+    bool modified = false;
     int myPenWidth = 3;
+    QColor eventColor;
     QColor myPenColor = QColor(223, 42, 42);
     QImage image;
+    QPoint begin = QPoint();
+    QPoint dest = QPoint();
     QPoint lastPoint;
-
 };
 
 

@@ -105,10 +105,12 @@ void MainWindow::on_actionLine_triggered()
 
 void MainWindow::on_actionFill_triggered()
 {
+    ui->actionpencil->setChecked(false);
     ui->actionCursor->setChecked(false);
     ui->actionSquare->setChecked(false);
     ui->actionCircle->setChecked(false);
     ui->actionLine->setChecked(false);
+    scribbleArea->setDrawingShape("fill");
 }
 
 
