@@ -58,6 +58,8 @@ private slots:
 
     void on_actionAbout_Project_triggered();
 
+    void on_actionPreferences_triggered();
+
 private:
 
     Ui::MainWindow *ui;

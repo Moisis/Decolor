@@ -71,7 +71,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="font">
@@ -97,6 +97,7 @@
     <addaction name="actionPen_Width"/>
     <addaction name="separator"/>
     <addaction name="actionClear_Screen"/>
+    <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -312,6 +313,11 @@
   <action name="actionAbout_Project">
    <property name="text">
     <string>About Decolor</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
    </property>
   </action>
  </widget>
