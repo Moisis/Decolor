@@ -80,6 +80,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
 
 void ScribbleArea::setmode(bool newmode){
   this->dark = newmode ;
+    clearImage();
 
 }
 
@@ -114,10 +115,12 @@ void ScribbleArea::setPenWidth(int newWidth)
  *************************/
 void ScribbleArea::clearImage()
 {
-    if(!dark)
+    if(this->dark){
     image.fill(qRgb(0, 0, 0));
-    else
+    }
+    else{
          image.fill(qRgb(255, 255, 255));
+    }
     modified = false;
     update();
 }
@@ -348,7 +351,7 @@ void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
     if (image->size() == newSize)
         return;
     QImage newImage(newSize, QImage::Format_RGB32);
-    newImage.fill(qRgb(0, 0, 0));
+    newImage.fill(qRgb(255, 255, 255));
     QPainter painter(&newImage);
     painter.drawImage(QPoint(0, 0), *image);
     *image = newImage;

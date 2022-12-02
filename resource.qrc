@@ -7,5 +7,8 @@
         <file>img/paint-bucket.png</file>
         <file>img/pencil.png</file>
         <file>img/101067781_padded_logo - Copy.png</file>
+        <file>img/eraser.png</file>
+        <file>img/undo.png</file>
+        <file>img/redo.png</file>
     </qresource>
 </RCC>

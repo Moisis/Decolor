@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->setCentralWidget(scribbleArea);
     scribbleArea->setDrawingShape("None");
+    ui->menubar1->setStyleSheet("background-color: #aba7aa ;");
 }
 
 
@@ -194,6 +195,10 @@ void MainWindow::on_actionpencil_triggered()
     scribbleArea->setDrawingShape("free");
 }
 
+void MainWindow::on_actioneraser_triggered()
+{
+
+}
 
 void MainWindow::on_actionUndo_triggered()
 {
@@ -222,26 +227,28 @@ void MainWindow::on_actionAbout_Project_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
- bool ok1= scribbleArea->dark;
- QStringList  *QWER = new QStringList();
-QInputDialog  x = new QInputDialog ;
-QWER->append("Select Mode");
-QWER->append("Dark Mode");
-QWER->append("Light Mode");
-x.setComboBoxEditable(false) ;
-x.setComboBoxItems(*QWER);
+    QStringList items;
+       items << tr("Light Mode") << tr("Dark Mode") ;
+
+       bool ok1;
+       QString item = QInputDialog::getItem(this, tr("Preferences"),
+                                            tr("Theme:"), items, 0, false, &ok1);
+       if (ok1 && !item.isEmpty()){
+           if (item =="Dark Mode"){
+
+               this->scribbleArea->setmode(true);
 
 
-QString y = x.getItem(this,"Preferences","Select Mode",*QWER,0,true,&ok1);
 
-
-if (y=="Dark mode"){
-    this->scribbleArea->setmode(true);
-}else if (y== "Light Mode"){
-       this->scribbleArea->setmode(false);
+           }else if  (item == "Light Mode"){
+                  this->scribbleArea->setmode(false);
+           }
+              }
 
 
 }
-}
+
+
+
 
 
