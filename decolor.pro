@@ -14,7 +14,9 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
-    scribblearea.h
+    scribblearea.h \
+    Stack.h \
+    Queue.h
 
 FORMS += \
     mainwindow.ui
