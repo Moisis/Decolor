@@ -104,12 +104,9 @@ void ScribbleArea::setPenWidth(int newWidth)
     myPenWidth = newWidth;
 }
 
-/*************************
- *         Omar          *
- *************************/
 void ScribbleArea::clearImage()
 {
-    image.fill(qRgb(0, 0, 0));
+    image.fill(backgroundColor);
     modified = false;
     update();
 }
@@ -159,13 +156,19 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
 /*-----------------------------------------------------------------Mouse Event handling---------------------------------------------------------*/
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
 {
+    begin = event->pos();
+    dest = begin;
+    lastPoint = event->pos();
+    scribbling = true;
     if (event->button() == Qt::LeftButton && tool == Tools::Fill) {
+        undoStack.push(image);
         lastPoint = event->pos();
         points.push(QPoint(event->pos().x(), event->pos().y()));
         eventColor = image.pixelColor(event->pos().x(), event->pos().y());
         floodFill();
         scribbling = true;
-    } else if(event->button() == Qt::LeftButton) {
+    } else if(event->button() == Qt::LeftButton && tool == Tools::Pencil) {
+        undoStack.push(image);
         begin = event->pos();
         dest = begin;
         lastPoint = event->pos();
@@ -173,12 +176,14 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
     }
 }
 
-
 void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
 {
     if(tool == Tools::Pencil) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
-            drawLineTo(event->pos());
+            drawLineTo(event->pos(), myPenColor);
+    } else if(tool == Tools::Pencil) {
+        if ((event->buttons() & Qt::LeftButton) && scribbling)
+            erase(event->pos());
     } else {
         if ((event->buttons() & Qt::LeftButton) && scribbling) {
             dest = event->pos();
@@ -192,13 +197,14 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     if (tool == Tools::Pencil) {
         if (event->button() == Qt::LeftButton && scribbling) {
-            drawLineTo(event->pos());
+            drawLineTo(event->pos(), myPenColor);
             scribbling = false;
-
         }
     }
     else if (tool == Tools::Line) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
+            undoStack.push(image);
+            update();
             drawLine(event->pos());
             scribbling = false;
 
@@ -206,16 +212,22 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
     }
     else if (tool == Tools::Rect) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
+            undoStack.push(image);
+            update();
             drawRect(event->pos());
             scribbling = false;
 
         }
     } else if (tool == Tools::Circle) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
+            undoStack.push(image);
+            update();
             drawEllipse(event->pos());
             scribbling = false;
-
         }
+    } else if(tool == Tools::Eraser) {
+            erase(event->pos());
+            scribbling = false;
     }
 }
 
@@ -271,11 +283,11 @@ void ScribbleArea::drawEllipse(const QPoint &endPoint) {
                                     .adjusted(-rad, -rad, +rad, +rad));
 }
 /* Pencil tool */
-void ScribbleArea::drawLineTo(const QPoint &endPoint)
+void ScribbleArea::drawLineTo(const QPoint &endPoint, QColor color)
 {
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+    painter.setPen(QPen(color, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
     painter.drawLine(lastPoint, endPoint);
     modified = true;
@@ -287,6 +299,7 @@ void ScribbleArea::drawLineTo(const QPoint &endPoint)
 
 }
 
+/* fill tool */
 void ScribbleArea::floodFill() {
     std::array<int, 4> dx = {0, 1, 0, -1};
     std::array<int, 4> dy = {1, 0, -1, 0};
@@ -307,8 +320,29 @@ void ScribbleArea::floodFill() {
         }
     }
 }
-/*--------------------------------------------------------------------Misc------------------------------------------------------------------------*/
 
+/* eraser tool */
+void ScribbleArea::erase(const QPoint &endPoint) {
+    drawLineTo(endPoint, backgroundColor);
+}
+/*--------------------------------------------------------------------Misc------------------------------------------------------------------------*/
+void ScribbleArea::undo() {
+    redoStack.push(image);
+    if (!undoStack.empty()) {
+        image = undoStack.top();
+        update();
+        undoStack.pop();
+    }
+}
+
+void ScribbleArea::redo() {
+    undoStack.push(image);
+    if (!redoStack.empty()) {
+        image = redoStack.top();
+        update();
+        redoStack.pop();
+    }
+}
 bool ScribbleArea::openImage(const QString &fileName)
 {
     QImage loadedImage;
@@ -340,7 +374,7 @@ void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
     if (image->size() == newSize)
         return;
     QImage newImage(newSize, QImage::Format_RGB32);
-    newImage.fill(qRgb(0, 0, 0));
+    newImage.fill(backgroundColor);
     QPainter painter(&newImage);
     painter.drawImage(QPoint(0, 0), *image);
     *image = newImage;
