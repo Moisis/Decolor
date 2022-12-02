@@ -236,7 +236,7 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 /*Line tool*/
 void ScribbleArea::drawLine(const QPoint &endPoint) {
     QPainter painter(&image);
-    painter.setRenderHint(QPainter::Antialiasing);
+    //painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
 
@@ -256,7 +256,7 @@ void ScribbleArea::drawLine(const QPoint &endPoint) {
 /*Rect tool*/
 void ScribbleArea::drawRect(const QPoint &endPoint) {
     QPainter painter(&image);
-    painter.setRenderHint(QPainter::Antialiasing);
+    //painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
     QRect rect = QRect(begin, dest);
@@ -271,7 +271,7 @@ void ScribbleArea::drawRect(const QPoint &endPoint) {
 /*Circle tool*/
 void ScribbleArea::drawEllipse(const QPoint &endPoint) {
     QPainter painter(&image);
-    painter.setRenderHint(QPainter::Antialiasing);
+    //painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
     QRect rect = QRect(begin, dest);
@@ -312,7 +312,7 @@ void ScribbleArea::floodFill() {
             int nx = x + dx[i];
             int ny = y + dy[i];
             QColor newColor = image.pixelColor(nx, ny);
-            if (newColor == eventColor) {
+            if (newColor.rgb() == eventColor.rgb()) {
                 points.push(QPoint(nx, ny));
                 image.setPixelColor(nx, ny, myPenColor);
                 update();
@@ -328,6 +328,7 @@ void ScribbleArea::erase(const QPoint &endPoint) {
 /*--------------------------------------------------------------------Misc------------------------------------------------------------------------*/
 void ScribbleArea::undo() {
     redoStack.push(image);
+    floodFill();
     if (!undoStack.empty()) {
         image = undoStack.top();
         update();
