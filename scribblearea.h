@@ -83,7 +83,7 @@ public:
     bool isModified() const { return modified; }
     void setPenColor(const QColor &newColor);
     void setPenWidth(int newWidth);
-    void setDrawingShape(std::string sh);
+    void setTool(std::string sh);
     void setLastRect(const QPoint &p1, const QPoint &p2);
     void undo();
     void redo();

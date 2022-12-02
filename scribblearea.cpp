@@ -84,7 +84,7 @@ void ScribbleArea::setmode(bool newmode){
 
 }
 
-void ScribbleArea::setDrawingShape(std::string dShape) {
+void ScribbleArea::setTool(std::string dShape) {
     if (dShape == "line") {
        tool = Tools::Line;
     } else if (dShape == "rect") {
@@ -95,6 +95,8 @@ void ScribbleArea::setDrawingShape(std::string dShape) {
        tool = Tools::Pencil;
     } else if(dShape == "fill"){
        tool = Tools::Fill;
+    } else if (dShape == "eraser"){
+       tool = Tools::Eraser;
     } else {
        tool = Tools::None;
     }
@@ -112,6 +114,11 @@ void ScribbleArea::setPenWidth(int newWidth)
 
 void ScribbleArea::clearImage()
 {
+    if (dark) {
+        backgroundColor = QColor(0, 0, 0);
+    } else {
+        backgroundColor = QColor(255, 255, 255);
+    }
     image.fill(backgroundColor);
     modified = false;
     update();
@@ -179,6 +186,12 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
         dest = begin;
         lastPoint = event->pos();
         scribbling = true;
+    } else if (event->button() == Qt::LeftButton && tool == Tools::Eraser) {
+        undoStack.push(image);
+        begin = event->pos();
+        dest = begin;
+        lastPoint = event->pos();
+        scribbling = true;
     }
 }
 
@@ -187,7 +200,7 @@ void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
     if(tool == Tools::Pencil) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             drawLineTo(event->pos(), myPenColor);
-    } else if(tool == Tools::Pencil) {
+    } else if(tool == Tools::Eraser) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             erase(event->pos());
     } else {

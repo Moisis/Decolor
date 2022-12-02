@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->setCentralWidget(scribbleArea);
-    scribbleArea->setDrawingShape("None");
+    scribbleArea->setTool("None");
     ui->menubar1->setStyleSheet("background-color: #aba7aa ;");
 }
 
@@ -70,7 +70,7 @@ bool MainWindow::saveFile(const QByteArray &fileFormat)
 
 void MainWindow::on_actionCircle_triggered()
 {
-    scribbleArea->setDrawingShape("circle");
+    scribbleArea->setTool("circle");
     ui->actionCursor->setChecked(false);
     ui->actionSquare->setChecked(false);
     ui->actionLine->setChecked(false);
@@ -86,7 +86,7 @@ void MainWindow::on_actionCursor_triggered()
     ui->actionLine->setChecked(false);
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
-    scribbleArea->setDrawingShape("None");
+    scribbleArea->setTool("None");
 }
 
 
@@ -97,7 +97,7 @@ void MainWindow::on_actionLine_triggered()
     ui->actionSquare->setChecked(false);
     ui->actionCircle->setChecked(false);
     ui->actionFill->setChecked(false);
-    scribbleArea->setDrawingShape("line");
+    scribbleArea->setTool("line");
 
 }
 
@@ -109,7 +109,7 @@ void MainWindow::on_actionFill_triggered()
     ui->actionSquare->setChecked(false);
     ui->actionCircle->setChecked(false);
     ui->actionLine->setChecked(false);
-    scribbleArea->setDrawingShape("fill");
+    scribbleArea->setTool("fill");
 }
 
 
@@ -120,7 +120,7 @@ void MainWindow::on_actionSquare_triggered()
     ui->actionCircle->setChecked(false);
     ui->actionLine->setChecked(false);
     ui->actionpencil->setChecked(false);
-    scribbleArea->setDrawingShape("rect");
+    scribbleArea->setTool("rect");
 
 }
 
@@ -179,7 +179,7 @@ void MainWindow::on_actionPen_Width_triggered()
 
 void MainWindow::on_actionClear_Screen_triggered()
 {
-    scribbleArea->setDrawingShape("None");
+    scribbleArea->setTool("None");
     scribbleArea->clearImage();
 }
 
@@ -192,12 +192,18 @@ void MainWindow::on_actionpencil_triggered()
     ui->actionLine->setChecked(false);
     ui->actionFill->setChecked(false);
     ui->actionCursor->setChecked(false);
-    scribbleArea->setDrawingShape("free");
+    scribbleArea->setTool("free");
 }
 
 void MainWindow::on_actioneraser_triggered()
 {
-
+    ui->actionCircle->setChecked(false);
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionCursor->setChecked(false);
+    ui->actionpencil->setChecked(false);
+    scribbleArea->setTool("eraser");
 }
 
 void MainWindow::on_actionUndo_triggered()
