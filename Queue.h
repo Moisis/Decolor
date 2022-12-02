@@ -30,6 +30,7 @@ public:
 
 private:
   QueueNode<T>* head;
+  QueueNode<T>* back;
   unsigned int mySize;
 
 };
@@ -49,13 +50,11 @@ Queue<T>::~Queue() {
 template<class T>
 void Queue<T>::push(T val) {
   if (!head) {
-    head = new QueueNode<T>(val);
+    head = back = new QueueNode<T>(val);
   } else {
-    QueueNode<T>* cur = head;
-    while (cur->nxt) {
-      cur = cur->nxt;
-    }
-    cur->nxt = new QueueNode<T>(val);
+    QueueNode<T>* tmp = new QueueNode<T>(val);
+    back->nxt = tmp;
+    back = tmp;
   }
   mySize++;
 }
@@ -91,5 +90,6 @@ T Queue<T>::front() const {
     return garbage;
   }
 }
+
 
 
