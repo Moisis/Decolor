@@ -25,7 +25,7 @@ public:
   void push(T val);
   void pop();
   unsigned int size() const;
-  T peek() const;
+  T front() const;
   bool empty() const;
 
 private:
@@ -82,7 +82,7 @@ bool Queue<T>::empty() const {
 }
 
 template<class T>
-T Queue<T>::peek() const {
+T Queue<T>::front() const {
   if(head) {
     return head->val;
   } else {

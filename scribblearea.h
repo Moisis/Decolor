@@ -57,9 +57,8 @@
 #include <QWidget>
 #include <QRect>
 #include <QStack>
-#include <queue>
-#include <stack>
 #include "Stack.h"
+#include "Queue.h"
 //! [0]
 class ScribbleArea : public QWidget
 {
@@ -121,7 +120,7 @@ private:
 
 /* private members*/
 private:
-    std::queue<QPoint> points;
+    Queue<QPoint> points;
     Stack<QImage> undoStack;
     Stack<QImage> redoStack;
     Tools tool = Tools::Rect;
