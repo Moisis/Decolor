@@ -174,11 +174,13 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
     lastPoint = event->pos();
     scribbling = true;
     if (event->button() == Qt::LeftButton && tool == Tools::Fill) {
+        isFloodFilling = false;
         undoStack.push(image);
         lastPoint = event->pos();
         points.push(QPoint(event->pos().x(), event->pos().y()));
         eventColor = image.pixelColor(event->pos().x(), event->pos().y());
         floodFill();
+        isFloodFilling = true;
         scribbling = true;
     } else if(event->button() == Qt::LeftButton && tool == Tools::Pencil) {
         undoStack.push(image);
@@ -323,18 +325,20 @@ void ScribbleArea::floodFill() {
     std::array<int, 4> dx = {0, 1, 0, -1};
     std::array<int, 4> dy = {1, 0, -1, 0};
 
-    while(!points.empty()) {
-        int x = points.front().x();
-        int y = points.front().y();
-        points.pop();
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            QColor newColor = image.pixelColor(nx, ny);
-            if (newColor.rgb() == eventColor.rgb()) {
-                points.push(QPoint(nx, ny));
-                image.setPixelColor(nx, ny, myPenColor);
-                update();
+    if (!(myPenColor == eventColor)) {
+        while(!points.empty()) {
+            int x = points.front().x();
+            int y = points.front().y();
+            points.pop();
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                QColor newColor = image.pixelColor(nx, ny);
+                if (newColor == eventColor) {
+                    points.push(QPoint(nx, ny));
+                    image.setPixelColor(nx, ny, myPenColor);
+                    update();
+                }
             }
         }
     }

@@ -75,12 +75,12 @@ public:
         Fill,
         None,
     };
-    bool dark = false;
+    bool dark = true;
     void setmode(bool newmode);
-
     bool openImage(const QString &fileName);
     bool saveImage(const QString &fileName, const char *fileFormat);
     bool isModified() const { return modified; }
+    void setIsFloodFilling(bool val)  { isFloodFilling = val; }
     void setPenColor(const QColor &newColor);
     void setPenWidth(int newWidth);
     void setTool(std::string sh);
@@ -126,6 +126,7 @@ private:
     Tools tool = Tools::Rect;
     bool scribbling = false;
     bool modified = false;
+    bool isFloodFilling = false;
     int myPenWidth = 3;
     QColor eventColor;
     QColor backgroundColor = QColor(0, 0, 0);
