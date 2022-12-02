@@ -64,14 +64,23 @@
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QMenuBar {
+    border-style: solid;
+     border-style: outset;
+     color: #EAEAEA;
+     background: #949193; 
+     font-size: 9pt;
+}</string>
+   </property>
   </widget>
-  <widget class="QMenuBar" name="menubar">
+  <widget class="QMenuBar" name="menubar1">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="font">
@@ -97,6 +106,7 @@
     <addaction name="actionPen_Width"/>
     <addaction name="separator"/>
     <addaction name="actionClear_Screen"/>
+    <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -127,6 +137,15 @@
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QToolBar {
+     border-style: solid;
+     border-style: outset;
+     color: #EAEAEA;
+     background: #aba7aa; 
+     font-size: 9pt;
+}</string>
+   </property>
    <property name="movable">
     <bool>false</bool>
    </property>
@@ -156,6 +175,7 @@
    <addaction name="separator"/>
    <addaction name="actionCursor"/>
    <addaction name="actionpencil"/>
+   <addaction name="actioneraser"/>
    <addaction name="actionLine"/>
    <addaction name="actionSquare"/>
    <addaction name="actionCircle"/>
@@ -279,6 +299,10 @@
    </property>
   </action>
   <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/img/undo.png</normaloff>:/img/undo.png</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
@@ -287,6 +311,10 @@
    </property>
   </action>
   <action name="actionredo">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/img/redo.png</normaloff>:/img/redo.png</iconset>
+   </property>
    <property name="text">
     <string>redo</string>
    </property>
@@ -312,6 +340,23 @@
   <action name="actionAbout_Project">
    <property name="text">
     <string>About Decolor</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actioneraser">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/img/eraser.png</normaloff>:/img/eraser.png</iconset>
+   </property>
+   <property name="text">
+    <string>eraser</string>
    </property>
   </action>
  </widget>

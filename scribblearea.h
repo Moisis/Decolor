@@ -75,6 +75,8 @@ public:
         Fill,
         None,
     };
+    bool dark = false;
+    void setmode(bool newmode);
 
     bool openImage(const QString &fileName);
     bool saveImage(const QString &fileName, const char *fileFormat);

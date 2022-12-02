@@ -78,6 +78,12 @@ ScribbleArea::ScribbleArea(QWidget *parent)
 
 /*-----------------------------------------------------------------Setters------------------------------------------------------------------------*/
 
+void ScribbleArea::setmode(bool newmode){
+  this->dark = newmode ;
+    clearImage();
+
+}
+
 void ScribbleArea::setDrawingShape(std::string dShape) {
     if (dShape == "line") {
        tool = Tools::Line;
