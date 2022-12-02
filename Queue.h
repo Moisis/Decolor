@@ -63,7 +63,7 @@ void Queue<T>::push(T val) {
 template<class T>
 void Queue<T>::pop() {
   if (mySize == 1) {
-    head = NULL;
+    head = back = NULL;
   } else if (mySize > 1) {
     head = head->nxt;
   }
