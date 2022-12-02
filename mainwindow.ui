@@ -319,7 +319,7 @@
     <string>redo</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Y</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionpencil">

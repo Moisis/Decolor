@@ -58,6 +58,7 @@
 #include <QRect>
 #include <QStack>
 #include <queue>
+#include <stack>
 //! [0]
 class ScribbleArea : public QWidget
 {
@@ -67,6 +68,7 @@ public:
     ScribbleArea(QWidget *parent = nullptr);
     enum Tools {
         Pencil,
+        Eraser,
         Line,
         Rect,
         Circle,
@@ -83,6 +85,8 @@ public:
     void setPenWidth(int newWidth);
     void setDrawingShape(std::string sh);
     void setLastRect(const QPoint &p1, const QPoint &p2);
+    void undo();
+    void redo();
     int penWidth() const { return myPenWidth; }
     QStack <QWidget> st1;
     QColor penColor() const { return myPenColor; }
@@ -100,11 +104,12 @@ protected:
 
 /*Tools functions*/
 private:
-    void drawLineTo(const QPoint &endPoint);
+    void drawLineTo(const QPoint &endPoint, QColor color);
     void drawLine(const QPoint &endPoint);
     void drawRect(const QPoint &endPoint);
     void drawEllipse(const QPoint &endPoint);
     void resizeImage(QImage *image, const QSize &newSize);
+    void erase(const QPoint &endPoint);
     void floodFill();
 
 
@@ -116,11 +121,14 @@ private:
 /* private members*/
 private:
     std::queue<QPoint> points;
+    std::stack<QImage> undoStack;
+    std::stack<QImage> redoStack;
     Tools tool = Tools::Rect;
     bool scribbling = false;
     bool modified = false;
     int myPenWidth = 3;
     QColor eventColor;
+    QColor backgroundColor = QColor(0, 0, 0);
     QColor myPenColor = QColor(223, 42, 42);
     QImage image;
     QPoint begin = QPoint();

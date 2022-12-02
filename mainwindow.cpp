@@ -202,16 +202,13 @@ void MainWindow::on_actioneraser_triggered()
 
 void MainWindow::on_actionUndo_triggered()
 {
-
-
-
-
+    scribbleArea->undo();
 }
 
 
 void MainWindow::on_actionredo_triggered()
 {
-
+    scribbleArea->redo();
 }
 
 
