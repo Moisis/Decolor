@@ -25,7 +25,7 @@ public:
   void push(T);
   void pop();
   unsigned int size() const;
-  T peek() const;
+  T top() const;
   bool empty() const;
 
 private:
@@ -83,7 +83,7 @@ bool Stack<T>::empty() const {
 }
 
 template<class T>
-T Stack<T>::peek() const {
+T Stack<T>::top() const {
   if(head) {
     return head->val;
   } else {
