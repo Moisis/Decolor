@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QWidget>
-#include <QGraphicsScene>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
@@ -20,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->setCentralWidget(scribbleArea);
     scribbleArea->setDrawingShape("None");
-    scribbleArea->clearImage();
+    ui->menubar1->setStyleSheet("background-color: #aba7aa ;");
 }
 
 
@@ -196,6 +195,10 @@ void MainWindow::on_actionpencil_triggered()
     scribbleArea->setDrawingShape("free");
 }
 
+void MainWindow::on_actioneraser_triggered()
+{
+
+}
 
 void MainWindow::on_actionUndo_triggered()
 {
@@ -220,4 +223,32 @@ void MainWindow::on_actionAbout_Project_triggered()
                "Circle and various shapes, In addition to free hand drawing, packed with features like flood fill and and choosing colors and erasing. "
                ));
 }
+
+
+void MainWindow::on_actionPreferences_triggered()
+{
+    QStringList items;
+       items << tr("Light Mode") << tr("Dark Mode") ;
+
+       bool ok1;
+       QString item = QInputDialog::getItem(this, tr("Preferences"),
+                                            tr("Theme:"), items, 0, false, &ok1);
+       if (ok1 && !item.isEmpty()){
+           if (item =="Dark Mode"){
+
+               this->scribbleArea->setmode(true);
+
+
+
+           }else if  (item == "Light Mode"){
+                  this->scribbleArea->setmode(false);
+           }
+              }
+
+
+}
+
+
+
+
 
