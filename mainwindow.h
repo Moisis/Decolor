@@ -62,6 +62,8 @@ private slots:
 
     void on_actioneraser_triggered();
 
+    void on_actioncolorPicker_triggered();
+
 private:
 
     Ui::MainWindow *ui;
