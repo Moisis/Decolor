@@ -11,6 +11,11 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QWidget>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QCursor>
+#include <QSpinBox>
+#include <QComboBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
@@ -20,9 +25,33 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(scribbleArea);
     scribbleArea->setTool("None");
     ui->menubar1->setStyleSheet("background-color: #aba7aa ;");
+    scribbleArea->setmode(false);
+    QColorDialog *qtsd = new QColorDialog() ;
+    qtsd->setWindowFlags(Qt::Widget);
+    ui->toolBar2->addWidget(qtsd);
+    ui->toolBar2->hide();
+    qtsd->setOption(QColorDialog::NoButtons);
+    qtsd->setOption(QColorDialog::DontUseNativeDialog);
+
+    qtsd->connect(qtsd, &QColorDialog::currentColorChanged, [this, qtsd]()
+                {
+        scribbleArea->setPenColor(qtsd->currentColor());
+    }
+    );
+
+
+    QSpinBox *spinBox = new QSpinBox(this);
+    ui->toolBar1->addWidget(spinBox);
+    spinBox->setRange(1,50);
+    spinBox->connect(spinBox, &QSpinBox::valueChanged, [spinBox ,this]()
+                        {
+                scribbleArea->setPenWidth(spinBox->value());
+            }
+            );
+
+
+
 }
-
-
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -76,6 +105,8 @@ void MainWindow::on_actionCircle_triggered()
     ui->actionLine->setChecked(false);
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
+       ui->actioneraser->setChecked(false);
+
 }
 
 
@@ -86,7 +117,10 @@ void MainWindow::on_actionCursor_triggered()
     ui->actionLine->setChecked(false);
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
+    ui->actioneraser->setChecked(false);
     scribbleArea->setTool("None");
+    this->setCursor(Qt::ArrowCursor);
+
 }
 
 
@@ -97,7 +131,10 @@ void MainWindow::on_actionLine_triggered()
     ui->actionSquare->setChecked(false);
     ui->actionCircle->setChecked(false);
     ui->actionFill->setChecked(false);
+       ui->actioneraser->setChecked(false);
     scribbleArea->setTool("line");
+    this->setCursor(Qt::CrossCursor);
+
 
 }
 
@@ -109,7 +146,13 @@ void MainWindow::on_actionFill_triggered()
     ui->actionSquare->setChecked(false);
     ui->actionCircle->setChecked(false);
     ui->actionLine->setChecked(false);
+       ui->actioneraser->setChecked(false);
     scribbleArea->setTool("fill");
+
+    QPixmap p = QPixmap(":/img/paint-bucket.png");
+   QPixmap scaled = p.scaled(QSize(50, 50));
+    QCursor c = QCursor(scaled, 0, 0);
+    this->setCursor(c);
 }
 
 
@@ -120,10 +163,50 @@ void MainWindow::on_actionSquare_triggered()
     ui->actionCircle->setChecked(false);
     ui->actionLine->setChecked(false);
     ui->actionpencil->setChecked(false);
+       ui->actioneraser->setChecked(false);
     scribbleArea->setTool("rect");
-
+    this->setCursor(Qt::CrossCursor);
 }
 
+void MainWindow::on_actionpencil_triggered()
+{
+    ui->actionCircle->setChecked(false);
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionCursor->setChecked(false);
+    ui->actioneraser->setChecked(false);
+    scribbleArea->setTool("free");
+
+    this->setCursor(Qt::CrossCursor);
+}
+
+void MainWindow::on_actioneraser_triggered()
+{
+    ui->actionCircle->setChecked(false);
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionCursor->setChecked(false);
+    ui->actionpencil->setChecked(false);
+    scribbleArea->setTool("eraser");
+
+    QPixmap p = QPixmap(":/img/eraser.png");
+   QPixmap scaled = p.scaled(QSize(50, 50));
+    QCursor c = QCursor(scaled, 0, 0);
+    this->setCursor(c);
+}
+
+void MainWindow::on_actioncolorPicker_triggered()
+{
+    if (scribbleArea->picker){
+        ui->toolBar2->hide();
+        scribbleArea->setpicker(false);
+    }else{
+        ui->toolBar2->show();
+        scribbleArea->setpicker(true);
+    }
+}
 
 void MainWindow::on_actionOpen_triggered()
 {
@@ -181,40 +264,38 @@ void MainWindow::on_actionClear_Screen_triggered()
 {
     scribbleArea->setTool("None");
     scribbleArea->clearImage();
+       ui->actionCursor->setChecked(true);
+       ui->actionCircle->setChecked(false);
+       ui->actionSquare->setChecked(false);
+       ui->actionLine->setChecked(false);
+       ui->actionFill->setChecked(false);
+       ui->actionpencil->setChecked(false);
+       ui->actioneraser->setChecked(false);
 }
 
 
 
-void MainWindow::on_actionpencil_triggered()
-{
-    ui->actionCircle->setChecked(false);
-    ui->actionSquare->setChecked(false);
-    ui->actionLine->setChecked(false);
-    ui->actionFill->setChecked(false);
-    ui->actionCursor->setChecked(false);
-    scribbleArea->setTool("free");
-}
 
-void MainWindow::on_actioneraser_triggered()
-{
-    ui->actionCircle->setChecked(false);
-    ui->actionSquare->setChecked(false);
-    ui->actionLine->setChecked(false);
-    ui->actionFill->setChecked(false);
-    ui->actionCursor->setChecked(false);
-    ui->actionpencil->setChecked(false);
-    scribbleArea->setTool("eraser");
-}
 
 void MainWindow::on_actionUndo_triggered()
 {
     scribbleArea->undo();
+
+
 }
 
 
 void MainWindow::on_actionredo_triggered()
 {
     scribbleArea->redo();
+    scribbleArea->setTool("None");
+    ui->actionCursor->setChecked(true);
+    ui->actionCircle->setChecked(false);
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionpencil->setChecked(false);
+    ui->actioneraser->setChecked(false);
 }
 
 
@@ -233,18 +314,27 @@ void MainWindow::on_actionPreferences_triggered()
     QStringList items;
        items << tr("Light Mode") << tr("Dark Mode") ;
 
+
+
        bool ok1;
-       QString item = QInputDialog::getItem(this, tr("Preferences"),
-                                            tr("Theme:"), items, 0, false, &ok1);
+       QInputDialog s ;
+       s.setStyleSheet("color : #000000 ;");
+       QString item = s.getItem(this, tr("Preferences"), tr("Theme:"), items, 0, false, &ok1);
+
+
+
        if (ok1 && !item.isEmpty()){
            if (item =="Dark Mode"){
-
                this->scribbleArea->setmode(true);
-
-
+               ui->toolBar1->setStyleSheet("background-color: #3B3C36 ;");
+               ui->toolBar2->setStyleSheet("QToolBar{ background-color: #3B3C36 ; color: white ; window-text : white }");
+                ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
 
            }else if  (item == "Light Mode"){
                   this->scribbleArea->setmode(false);
+               ui->menubar1->setStyleSheet("background-color:  #aba7aa ;");
+               ui->toolBar1->setStyleSheet("background-color:  #aba7aa ;");
+               ui->toolBar2->setStyleSheet("background-color:  #aba7aa ;");
            }
               }
 

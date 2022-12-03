@@ -33,6 +33,10 @@ void ScribbleArea::setmode(bool newmode){
     clearImage();
 
 }
+void ScribbleArea::setpicker(bool newmode){
+  this->picker = newmode ;
+
+}
 
 void ScribbleArea::setTool(std::string dShape) {
     if (dShape == "line") {
@@ -306,6 +310,8 @@ void ScribbleArea::undo() {
         image = undoStack.top();
         update();
         undoStack.pop();
+    }else{
+        modified = false ;
     }
 }
 

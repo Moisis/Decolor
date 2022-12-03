@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>468</height>
+    <width>677</width>
+    <height>462</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -79,7 +79,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>677</width>
      <height>20</height>
     </rect>
    </property>
@@ -147,7 +147,7 @@
 }</string>
    </property>
    <property name="movable">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="allowedAreas">
     <set>Qt::AllToolBarAreas</set>
@@ -157,8 +157,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>35</width>
-     <height>35</height>
+     <width>40</width>
+     <height>40</height>
     </size>
    </property>
    <property name="floatable">
@@ -181,6 +181,28 @@
    <addaction name="actionCircle"/>
    <addaction name="actionFill"/>
    <addaction name="separator"/>
+   <addaction name="actioncolorPicker"/>
+   <addaction name="actionPenWidth"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar2">
+   <property name="windowTitle">
+    <string>toolBar2</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QToolBar {
+     border-style: solid;
+     border-style: outset;
+     color: #EAEAEA;
+     background: #aba7aa; 
+     font-size: 9pt;
+}</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>RightToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
   </widget>
   <action name="actionCursor">
    <property name="checkable">
@@ -357,6 +379,29 @@
    </property>
    <property name="text">
     <string>eraser</string>
+   </property>
+  </action>
+  <action name="actioncolorPicker">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/img/chromatic.png</normaloff>:/img/chromatic.png</iconset>
+   </property>
+   <property name="text">
+    <string>colorPicker</string>
+   </property>
+   <property name="toolTip">
+    <string>Color Picker</string>
+   </property>
+  </action>
+  <action name="actionPenWidth">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>PenWidth</string>
    </property>
   </action>
  </widget>

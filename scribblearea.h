@@ -25,8 +25,10 @@ public:
         Fill,
         None,
     };
+    bool picker= false ;
     bool dark = true;
     void setmode(bool newmode);
+    void setpicker(bool newmode);
     bool openImage(const QString &fileName);
     bool saveImage(const QString &fileName, const char *fileFormat);
     bool isModified() const { return modified; }
@@ -79,7 +81,7 @@ private:
     bool isFloodFilling = false;
     int myPenWidth = 3;
     QColor eventColor;
-    QColor backgroundColor = QColor(0, 0, 0);
+    QColor backgroundColor = QColor(255, 255, 255);
     QColor myPenColor = QColor(223, 42, 42);
     QImage image;
     QPoint begin = QPoint();
