@@ -69,7 +69,7 @@
     border-style: solid;
      border-style: outset;
      color: #EAEAEA;
-     background: #949193; 
+     background: #F0F1F3; 
      font-size: 9pt;
 }</string>
    </property>
@@ -142,7 +142,7 @@
      border-style: solid;
      border-style: outset;
      color: #EAEAEA;
-     background: #aba7aa; 
+     background: #F0F1F3; 
      font-size: 9pt;
 }</string>
    </property>
@@ -321,6 +321,9 @@
    </property>
   </action>
   <action name="actionUndo">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="resource.qrc">
      <normaloff>:/img/undo.png</normaloff>:/img/undo.png</iconset>
