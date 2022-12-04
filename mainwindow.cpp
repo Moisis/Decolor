@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     );
 
 
+
     QSpinBox *spinBox = new QSpinBox(this);
     ui->toolBar1->addWidget(spinBox);
     spinBox->setRange(1,50);
@@ -262,15 +263,8 @@ void MainWindow::on_actionPen_Width_triggered()
 
 void MainWindow::on_actionClear_Screen_triggered()
 {
-    scribbleArea->setTool("None");
-    scribbleArea->clearImage();
-       ui->actionCursor->setChecked(true);
-       ui->actionCircle->setChecked(false);
-       ui->actionSquare->setChecked(false);
-       ui->actionLine->setChecked(false);
-       ui->actionFill->setChecked(false);
-       ui->actionpencil->setChecked(false);
-       ui->actioneraser->setChecked(false);
+   scribbleArea->clearImage();
+   on_actionCursor_triggered();
 }
 
 
@@ -279,17 +273,20 @@ void MainWindow::on_actionClear_Screen_triggered()
 
 void MainWindow::on_actionUndo_triggered()
 {
-    if (!scribbleArea->undoStack.empty())
+    if (!scribbleArea->undoStack.empty()){
         scribbleArea->undo();
+         on_actionCursor_triggered();
+     }
 }
 
 
 void MainWindow::on_actionredo_triggered()
 {
-    if (!scribbleArea->redoStack.empty())
+    if (!scribbleArea->redoStack.empty()){
         scribbleArea->redo();
+         on_actionCursor_triggered();
 
-
+}
 }
 
 

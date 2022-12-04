@@ -206,6 +206,7 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
             scribbling = false;
     }
 
+
 }
 
 /*---------------------------------------------------------------------Tools functions------------------------------------------------------------*/
@@ -312,6 +313,7 @@ void ScribbleArea::undo() {
         image = undoStack.top();
         undoStack.pop();
           update();
+
     }else{
         modified = false ;
     }
