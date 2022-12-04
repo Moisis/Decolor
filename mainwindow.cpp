@@ -15,7 +15,6 @@
 #include <QPushButton>
 #include <QCursor>
 #include <QSpinBox>
-#include <QComboBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
@@ -24,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->setCentralWidget(scribbleArea);
     scribbleArea->setTool("None");
-    ui->menubar1->setStyleSheet("background-color: #aba7aa ;");
+    ui->menubar1->setStyleSheet("background-color: #F0F1F3 ;");
     scribbleArea->setmode(false);
     QColorDialog *qtsd = new QColorDialog() ;
     qtsd->setWindowFlags(Qt::Widget);
@@ -51,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
+
 }
 MainWindow::~MainWindow()
 {
@@ -69,7 +69,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 bool MainWindow::maybeSave()
 
 {
-    if (scribbleArea->isModified()) {
+    if (scribbleArea->isModified() && !scribbleArea->undoStack.empty()) {
        QMessageBox::StandardButton ret;
        ret = QMessageBox::warning(this, tr("Decolor"),
                           tr("The image has been modified.\n"
@@ -279,23 +279,17 @@ void MainWindow::on_actionClear_Screen_triggered()
 
 void MainWindow::on_actionUndo_triggered()
 {
-    scribbleArea->undo();
-
-
+    if (!scribbleArea->undoStack.empty())
+        scribbleArea->undo();
 }
 
 
 void MainWindow::on_actionredo_triggered()
 {
-    scribbleArea->redo();
-    scribbleArea->setTool("None");
-    ui->actionCursor->setChecked(true);
-    ui->actionCircle->setChecked(false);
-    ui->actionSquare->setChecked(false);
-    ui->actionLine->setChecked(false);
-    ui->actionFill->setChecked(false);
-    ui->actionpencil->setChecked(false);
-    ui->actioneraser->setChecked(false);
+    if (!scribbleArea->redoStack.empty())
+        scribbleArea->redo();
+
+
 }
 
 
@@ -326,22 +320,18 @@ void MainWindow::on_actionPreferences_triggered()
        if (ok1 && !item.isEmpty()){
            if (item =="Dark Mode"){
                this->scribbleArea->setmode(true);
-               ui->toolBar1->setStyleSheet("background-color: #3B3C36 ;");
+               ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :white ;");
                ui->toolBar2->setStyleSheet("QToolBar{ background-color: #3B3C36 ; color: white ; window-text : white }");
                 ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
 
            }else if  (item == "Light Mode"){
                   this->scribbleArea->setmode(false);
-               ui->menubar1->setStyleSheet("background-color:  #aba7aa ;");
-               ui->toolBar1->setStyleSheet("background-color:  #aba7aa ;");
-               ui->toolBar2->setStyleSheet("background-color:  #aba7aa ;");
+               ui->menubar1->setStyleSheet("background-color:  #F0F1F3 ;");
+               ui->toolBar1->setStyleSheet("background-color:  #F0F1F3 ; ");
+               ui->toolBar2->setStyleSheet("background-color:  #F0F1F3 ;");
            }
               }
 
 
 }
-
-
-
-
 

@@ -1,4 +1,5 @@
 #include "scribblearea.h"
+#include "ui_mainwindow.h"
 
 #include <QMouseEvent>
 #include <QPainter>
@@ -204,6 +205,7 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
             erase(event->pos());
             scribbling = false;
     }
+
 }
 
 /*---------------------------------------------------------------------Tools functions------------------------------------------------------------*/
@@ -308,8 +310,8 @@ void ScribbleArea::undo() {
     floodFill();
     if (!undoStack.empty()) {
         image = undoStack.top();
-        update();
         undoStack.pop();
+          update();
     }else{
         modified = false ;
     }
