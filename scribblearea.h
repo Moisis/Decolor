@@ -25,8 +25,8 @@ public:
         Fill,
         None,
     };
-    Stack<QImage> undoStack;
-     Stack<QImage> redoStack;
+        Stack<QImage> undoStack;
+        Stack<QImage> redoStack;
     bool picker= false ;
     bool dark = true;
     void setmode(bool newmode);
@@ -75,7 +75,7 @@ private:
 /* private members*/
 private:
     Queue<QPoint> points;
-    //Stack<QImage> undoStack;
+//    Stack<QImage> undoStack;
 //    Stack<QImage> redoStack;
     Tools tool = Tools::Rect;
     bool scribbling = false;

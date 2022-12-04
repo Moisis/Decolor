@@ -182,7 +182,6 @@
    <addaction name="actionFill"/>
    <addaction name="separator"/>
    <addaction name="actioncolorPicker"/>
-   <addaction name="actionPenWidth"/>
   </widget>
   <widget class="QToolBar" name="toolBar2">
    <property name="windowTitle">
@@ -397,14 +396,6 @@
    </property>
    <property name="toolTip">
     <string>Color Picker</string>
-   </property>
-  </action>
-  <action name="actionPenWidth">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>PenWidth</string>
    </property>
   </action>
  </widget>
