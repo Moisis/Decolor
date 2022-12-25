@@ -9,6 +9,7 @@
 #include "rectangle.h"
 #include "ellipse.h"
 #include "line.h"
+#include "cursor.h"
 
 
 Canvas::Canvas(QWidget *parent)
@@ -42,8 +43,8 @@ void Canvas::setTool(std::string dShape) {
     } else if(dShape == "fill"){
        tool = Tools::FILL;
     } else if (dShape == "eraser"){
-       tool = Tools::Eraser;
-    } else {
+       tool = Tools::ERASER;
+    } else if (dShape == "cursor"){
        tool = Tools::CURSOR;
     }
 }
@@ -79,9 +80,9 @@ void Canvas::paintEvent(QPaintEvent *event)
         painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                 Qt::RoundJoin));
         painter.setRenderHint(QPainter::Antialiasing);
-        if (previewShape != nullptr) {
-            previewShape->draw(painter);
-        }
+//        if (previewShape != nullptr) {
+//            previewShape->draw(painter);
+//        }
     }
 }
 
@@ -104,16 +105,15 @@ void Canvas::mousePressEvent(QMouseEvent *event)
     dest = begin;
     lastPoint = event->pos();
     scribbling = true;
+    dragging = true;
     if (event->button() == Qt::LeftButton) {
         switch(tool) {
             case FILL: {
-                isFloodFilling = false;
                 undoStack.push(image);
                 lastPoint = event->pos();
                 points.push(QPoint(event->pos().x(), event->pos().y()));
                 eventColor = image.pixelColor(event->pos().x(), event->pos().y());
                 floodFill();
-                isFloodFilling = true;
                 scribbling = true;
                 break;
             }
@@ -125,7 +125,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 scribbling = true;
                 break;
             }
-            case Eraser: {
+            case ERASER: {
                 undoStack.push(image);
                 begin = event->pos();
                 dest = begin;
@@ -134,15 +134,15 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 break;
             }
             case LINE: {
-                previewShape = new Line(begin, dest, myPenWidth);
+                previewShape = new Line(begin, dest, myPenWidth, myPenColor);
                 break;
             }
             case RECT: {
-                previewShape =  new Rectangle(begin, dest, myPenWidth);
+                previewShape =  new Rectangle(begin, dest, myPenWidth, myPenColor);
                 break;
             }
             case CIRCLE: {
-                previewShape =  new Ellipse(begin, dest, myPenWidth);
+                previewShape =  new Ellipse(begin, dest, myPenWidth, myPenColor);
                 break;
             }
             default: {
@@ -154,12 +154,35 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
-    if(tool == Tools::BRUSH) {
+    if (tool == Tools::BRUSH) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             drawLineTo(event->pos(), myPenColor);
-    } else if(tool == Tools::Eraser) {
+    } else if (tool == Tools::ERASER) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             erase(event->pos());
+    } else if (tool == Tools::CURSOR) {
+        cursor.setRect(QRect(begin, dest));
+        if (event->buttons() & Qt::LeftButton) {
+            if (dragging) {
+                // Update the position of the selected shapes
+                QPoint offset = event->pos() - dest;
+                for (Shape* shape : shapes) {
+                    if (shape->selected()) {
+                        shape->drag(offset);
+                    }
+                }
+                update();
+            }
+            else {
+                cursor.selectShapes(shapes);
+                update();
+            }
+        }
+        else {
+            cursor.deselectShapes(shapes);
+            update();
+        }
+        dest = event->pos();
     } else {
         if ((event->buttons() & Qt::LeftButton) && scribbling) {
             dest = event->pos();
@@ -173,6 +196,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 void Canvas::mouseReleaseEvent(QMouseEvent *event)
 {
     QPainter painter(this);
+    dragging = false;
     if (tool == Tools::BRUSH) {
         if (event->button() == Qt::LeftButton && scribbling) {
             drawLineTo(event->pos(), myPenColor);
@@ -181,27 +205,31 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
     }
     else if (tool == Tools::LINE) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
-            addToShapes(new Line(begin, dest, myPenWidth));
+            addToShapes(new Line(begin, dest, myPenWidth, myPenColor));
             update();
             scribbling = false;
         }
     }
     else if (tool == Tools::RECT) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
-            addToShapes(new Rectangle(begin, dest, myPenWidth));
+            addToShapes(new Rectangle(begin, dest, myPenWidth, myPenColor));
             update();
             scribbling = false;
 
         }
     } else if (tool == Tools::CIRCLE) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
-            addToShapes(new Ellipse(begin, dest, myPenWidth));
+            addToShapes(new Ellipse(begin, dest, myPenWidth, myPenColor));
             update();
             scribbling = false;
         }
-    } else if(tool == Tools::Eraser) {
+    } else if(tool == Tools::ERASER) {
             erase(event->pos());
             scribbling = false;
+    } else if (tool == Tools::CURSOR) {
+        select();
+        update();
+        scribbling = false;
     }
 }
 
@@ -250,6 +278,21 @@ void Canvas::floodFill() {
 /* eraser tool */
 void Canvas::erase(const QPoint &endPoint) {
     drawLineTo(endPoint, backgroundColor);
+}
+
+/* select tool */
+void Canvas::select() {
+    Cursor cursor;
+    cursor.setRect(QRect(begin, dest));
+    cursor.selectShapes(shapes);
+    QPainter painter(&image);
+    for (Shape* shape : shapes) {
+        painter.setPen(QPen(Qt::blue, shape->penWidth(), Qt::SolidLine, Qt::RoundCap,
+            Qt::RoundJoin));
+        if (shape->selected()) {
+            shape->draw(painter);
+        }
+    }
 }
 
 /*--------------------------------------------------------------------Misc------------------------------------------------------------------------*/
@@ -322,7 +365,7 @@ void Canvas::addToShapes(Shape* shape) {
     shapes.append(shape);
     undoStack.push(image);
     QPainter imagePainter(&image);
-    imagePainter.setPen(QPen(myPenColor, shape->PenWidth(), Qt::SolidLine, Qt::RoundCap,
+    imagePainter.setPen(QPen(shape->color(), shape->penWidth(), Qt::SolidLine, Qt::RoundCap,
             Qt::RoundJoin));
     shape->draw(imagePainter);
 }
