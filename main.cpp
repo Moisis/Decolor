@@ -14,8 +14,8 @@ QSplashScreen splash(pixmap);
 splash.show();
 MainWindow w ;
 QTimer::singleShot(700, &splash, SLOT(close()));
-QTimer::singleShot(500, &w, SLOT(show()));
-w.showMaximized();
+QTimer::singleShot(500, &w, SLOT(showMaximized()));
+
 
 return app.exec();
 }

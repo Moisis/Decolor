@@ -115,6 +115,7 @@ void MainWindow::on_actionCircle_triggered()
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
        ui->actioneraser->setChecked(false);
+        this->setCursor(Qt::CrossCursor);
 
 }
 
@@ -327,14 +328,14 @@ void MainWindow::on_actionPreferences_triggered()
            if (item =="Dark Mode"){
                this->scribbleArea->setmode(true);
                ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :white ;");
-               ui->toolBar2->setStyleSheet("QToolBar{ background-color: #3B3C36 ; color: white ; window-text : white }");
+               ui->toolBar2->setStyleSheet(" background-color: #3B3C36 ;  color: white ; ");
                 ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
 
            }else if  (item == "Light Mode"){
                   this->scribbleArea->setmode(false);
-               ui->menubar1->setStyleSheet("background-color:  #F0F1F3 ;");
-               ui->toolBar1->setStyleSheet("background-color:  #F0F1F3 ; ");
-               ui->toolBar2->setStyleSheet("background-color:  #F0F1F3 ;");
+               ui->menubar1->setStyleSheet("background-color:  #F0F1F3 ;color : black;");
+               ui->toolBar1->setStyleSheet("background-color:  #F0F1F3 ; color: black ; ");
+               ui->toolBar2->setStyleSheet("background-color:  #F0F1F3 ; color: black ;");
            }
               }
 
