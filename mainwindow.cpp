@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     QSpinBox *spinBox = new QSpinBox(this);
     ui->toolBar1->addWidget(spinBox);
     spinBox->setRange(1,50);
-    spinBox->connect(spinBox, &QSpinBox::valueChanged, [spinBox ,this]()
+    spinBox->connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), [spinBox ,this]()
                         {
                 scribbleArea->setPenWidth(spinBox->value());
             }
@@ -228,11 +228,6 @@ void MainWindow::on_actionSave_as_triggered()
     saveFile(fileFormat);
 }
 
-
-void MainWindow::on_actionPrint_triggered()
-{
-scribbleArea->print();
-}
 
 
 void MainWindow::on_actionExit_triggered()

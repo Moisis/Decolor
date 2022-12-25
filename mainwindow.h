@@ -40,7 +40,6 @@ private slots:
 
     void on_actionSave_as_triggered();
 
-    void on_actionPrint_triggered();
 
     void on_actionExit_triggered();
 
