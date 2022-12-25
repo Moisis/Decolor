@@ -6,16 +6,16 @@
 
 int main(int argc, char *argv[]){
 
-QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-QPixmap pixmap(":/img/splash.png");
-pixmap.scaled(400,0);
-QSplashScreen splash(pixmap);
-splash.show();
-MainWindow w ;
-QTimer::singleShot(700, &splash, SLOT(close()));
-QTimer::singleShot(500, &w, SLOT(showMaximized()));
+    QPixmap pixmap(":/img/splash.png");
+    pixmap.scaled(400,0);
+    QSplashScreen splash(pixmap);
+    splash.show();
+    MainWindow w;
+    QTimer::singleShot(700, &splash, SLOT(close()));
+    QTimer::singleShot(500, &w, SLOT(showMaximized()));
 
 
-return app.exec();
+    return app.exec();
 }

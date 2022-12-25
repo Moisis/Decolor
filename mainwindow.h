@@ -68,6 +68,6 @@ private:
 
     Ui::MainWindow *ui;
 
-    Canvas *scribbleArea;
+    Canvas *canvas;
 };
 #endif // MAINWINDOW_H

@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QRect>
 #include <QStack>
+#include <QUndoCommand>
 #include <memory>
 
 #include "Stack.h"
@@ -71,6 +72,7 @@ private:
     void resizeImage(QImage *image, const QSize &newSize);
     void erase(const QPoint &endPoint);
     void select();
+    void deselect();
     void floodFill();
 
 

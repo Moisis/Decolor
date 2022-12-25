@@ -35,6 +35,7 @@ protected:
     int m_pen_width;
     bool m_selected = false;
     QColor m_color;
+    QColor m_highlight_color = Qt::blue;
     QPoint m_start;
     QPoint m_end;
 };

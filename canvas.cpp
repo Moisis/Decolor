@@ -6,6 +6,8 @@
 #include <queue>
 #include<QRect>
 #include<QStack>
+
+#include "drawcommand.h"
 #include "rectangle.h"
 #include "ellipse.h"
 #include "line.h"
@@ -109,6 +111,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         switch(tool) {
             case FILL: {
+                deselect();
                 undoStack.push(image);
                 lastPoint = event->pos();
                 points.push(QPoint(event->pos().x(), event->pos().y()));
@@ -118,6 +121,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 break;
             }
             case BRUSH: {
+                deselect();
                 undoStack.push(image);
                 begin = event->pos();
                 dest = begin;
@@ -126,6 +130,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 break;
             }
             case ERASER: {
+                deselect();
                 undoStack.push(image);
                 begin = event->pos();
                 dest = begin;
@@ -134,14 +139,17 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 break;
             }
             case LINE: {
+                deselect();
                 previewShape = new Line(begin, dest, myPenWidth, myPenColor);
                 break;
             }
             case RECT: {
+                deselect();
                 previewShape =  new Rectangle(begin, dest, myPenWidth, myPenColor);
                 break;
             }
             case CIRCLE: {
+                deselect();
                 previewShape =  new Ellipse(begin, dest, myPenWidth, myPenColor);
                 break;
             }
@@ -166,6 +174,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             if (dragging) {
                 // Update the position of the selected shapes
                 QPoint offset = event->pos() - dest;
+                clearImage();
                 for (Shape* shape : shapes) {
                     if (shape->selected()) {
                         shape->drag(offset);
@@ -282,7 +291,6 @@ void Canvas::erase(const QPoint &endPoint) {
 
 /* select tool */
 void Canvas::select() {
-    Cursor cursor;
     cursor.setRect(QRect(begin, dest));
     cursor.selectShapes(shapes);
     QPainter painter(&image);
@@ -294,6 +302,21 @@ void Canvas::select() {
         }
     }
 }
+
+/* deselect */
+void Canvas::deselect() {
+    for (Shape* shape : shapes) {
+        QPainter painter(&image);
+        painter.setPen(QPen(shape->color(), shape->penWidth(), Qt::SolidLine, Qt::RoundCap,
+            Qt::RoundJoin));
+        if (shape->selected()) {
+            shape->deselect();
+            shape->draw(painter);
+        }
+    }
+
+}
+
 
 /*--------------------------------------------------------------------Misc------------------------------------------------------------------------*/
 void Canvas::undo() {
@@ -364,8 +387,9 @@ bool Canvas::isValidImageIndex(int x, int y) {
 void Canvas::addToShapes(Shape* shape) {
     shapes.append(shape);
     undoStack.push(image);
+    QPen pen(shape->color(), shape->penWidth(), Qt::SolidLine, Qt::RoundCap,
+            Qt::RoundJoin);
     QPainter imagePainter(&image);
-    imagePainter.setPen(QPen(shape->color(), shape->penWidth(), Qt::SolidLine, Qt::RoundCap,
-            Qt::RoundJoin));
+    imagePainter.setPen(pen);
     shape->draw(imagePainter);
 }

@@ -20,14 +20,14 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
-    , scribbleArea(new Canvas)
+    , canvas(new Canvas(this))
 {
     ui->setupUi(this);
-    this->setCentralWidget(scribbleArea);
-    scribbleArea->setTool("None");
+    this->setCentralWidget(canvas);
+    canvas->setTool("None");
     ui->menubar1->setStyleSheet("background-color: #F0F1F3 ;");
     ui->toolBar2->setStyleSheet("background-color: #F0F1F3 ;");
-    scribbleArea->setmode(false);
+    canvas->setmode(false);
     QColorDialog *qtsd = new QColorDialog() ;
     qtsd->setWindowFlags(Qt::Widget);
     ui->toolBar2->addWidget(qtsd);
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     qtsd->connect(qtsd, &QColorDialog::currentColorChanged, [this, qtsd]()
     {
-        scribbleArea->setPenColor(qtsd->currentColor());
+        canvas->setPenColor(qtsd->currentColor());
     }
     );
     QLabel *penwidthlbl = new QLabel(this);
@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     spinBox->setRange(1,50);
     spinBox->connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), [spinBox ,this]()
     {
-        scribbleArea->setPenWidth(spinBox->value());
+        canvas->setPenWidth(spinBox->value());
     }
     );
 
@@ -78,7 +78,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 bool MainWindow::maybeSave()
 
 {
-    if (scribbleArea->isModified() && !scribbleArea->undoStack.empty()) {
+    if (canvas->isModified() && !canvas->undoStack.empty()) {
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("Decolor"),
                                    tr("The image has been modified.\n"
@@ -103,12 +103,12 @@ bool MainWindow::saveFile(const QByteArray &fileFormat)
                                                     .arg(QString::fromLatin1(fileFormat)));
     if (fileName.isEmpty())
         return false;
-    return scribbleArea->saveImage(fileName, fileFormat.constData());
+    return canvas->saveImage(fileName, fileFormat.constData());
 }
 
 void MainWindow::on_actionCircle_triggered()
 {
-    scribbleArea->setTool("circle");
+    canvas->setTool("circle");
     ui->actionCursor->setChecked(false);
     ui->actionSquare->setChecked(false);
     ui->actionLine->setChecked(false);
@@ -128,7 +128,7 @@ void MainWindow::on_actionCursor_triggered()
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
     ui->actioneraser->setChecked(false);
-    scribbleArea->setTool("cursor");
+    canvas->setTool("cursor");
     this->setCursor(Qt::ArrowCursor);
 
 }
@@ -142,7 +142,7 @@ void MainWindow::on_actionLine_triggered()
     ui->actionCircle->setChecked(false);
     ui->actionFill->setChecked(false);
     ui->actioneraser->setChecked(false);
-    scribbleArea->setTool("line");
+    canvas->setTool("line");
     this->setCursor(Qt::CrossCursor);
 
 
@@ -157,7 +157,7 @@ void MainWindow::on_actionFill_triggered()
     ui->actionCircle->setChecked(false);
     ui->actionLine->setChecked(false);
     ui->actioneraser->setChecked(false);
-    scribbleArea->setTool("fill");
+    canvas->setTool("fill");
 
     QPixmap p = QPixmap(":/img/paint-bucket.png");
     QPixmap scaled = p.scaled(QSize(50, 50));
@@ -174,7 +174,7 @@ void MainWindow::on_actionSquare_triggered()
     ui->actionLine->setChecked(false);
     ui->actionpencil->setChecked(false);
     ui->actioneraser->setChecked(false);
-    scribbleArea->setTool("rect");
+    canvas->setTool("rect");
     this->setCursor(Qt::CrossCursor);
 }
 
@@ -186,7 +186,7 @@ void MainWindow::on_actionpencil_triggered()
     ui->actionFill->setChecked(false);
     ui->actionCursor->setChecked(false);
     ui->actioneraser->setChecked(false);
-    scribbleArea->setTool("free");
+    canvas->setTool("free");
 
     this->setCursor(Qt::CrossCursor);
 }
@@ -199,7 +199,7 @@ void MainWindow::on_actioneraser_triggered()
     ui->actionFill->setChecked(false);
     ui->actionCursor->setChecked(false);
     ui->actionpencil->setChecked(false);
-    scribbleArea->setTool("eraser");
+    canvas->setTool("eraser");
 
     QPixmap p = QPixmap(":/img/eraser.png");
     QPixmap scaled = p.scaled(QSize(40, 40));
@@ -209,12 +209,12 @@ void MainWindow::on_actioneraser_triggered()
 
 void MainWindow::on_actioncolorPicker_triggered()
 {
-    if (scribbleArea->picker){
+    if (canvas->picker){
         ui->toolBar2->hide();
-        scribbleArea->setpicker(false);
+        canvas->setpicker(false);
     }else{
         ui->toolBar2->show();
-        scribbleArea->setpicker(true);
+        canvas->setpicker(true);
     }
 }
 
@@ -224,7 +224,7 @@ void MainWindow::on_actionOpen_triggered()
         QString fileName = QFileDialog::getOpenFileName(this,
                                                         tr("Open File"), QDir::currentPath());
         if (!fileName.isEmpty())
-            scribbleArea->openImage(fileName);
+            canvas->openImage(fileName);
     }
 
 }
@@ -247,9 +247,9 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::on_actionPen_Color_triggered()
 {
-    QColor newColor = QColorDialog::getColor(scribbleArea->penColor());
+    QColor newColor = QColorDialog::getColor(canvas->penColor());
     if (newColor.isValid())
-        scribbleArea->setPenColor(newColor);
+        canvas->setPenColor(newColor);
 }
 
 
@@ -258,17 +258,17 @@ void MainWindow::on_actionPen_Width_triggered()
     bool ok;
     int newWidth = QInputDialog::getInt(this, tr("Decolor"),
                                         tr("Select pen width:"),
-                                        scribbleArea->penWidth(),
+                                        canvas->penWidth(),
                                         1, 50, 1, &ok);
     if (ok)
-        scribbleArea->setPenWidth(newWidth);
+        canvas->setPenWidth(newWidth);
 
 }
 
 
 void MainWindow::on_actionClear_Screen_triggered()
 {
-    scribbleArea->clearImage();
+    canvas->clearImage();
     on_actionCursor_triggered();
 }
 
@@ -278,17 +278,17 @@ void MainWindow::on_actionClear_Screen_triggered()
 
 void MainWindow::on_actionUndo_triggered()
 {
-    if (!scribbleArea->undoStack.empty()){
-        scribbleArea->undo();
+//    if (!canvas->undoStack.empty()){
+        canvas->undo();
         on_actionCursor_triggered();
-    }
+//    }
 }
 
 
 void MainWindow::on_actionredo_triggered()
 {
-    if (!scribbleArea->redoStack.empty()){
-        scribbleArea->redo();
+    if (!canvas->redoStack.empty()){
+        canvas->redo();
         on_actionCursor_triggered();
 
     }
@@ -321,13 +321,13 @@ void MainWindow::on_actionPreferences_triggered()
 
     if (ok1 && !item.isEmpty()){
         if (item =="Dark Mode"){
-            this->scribbleArea->setmode(true);
+            this->canvas->setmode(true);
             ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :white ;");
             ui->toolBar2->setStyleSheet(" background-color: #3B3C36 ;  color: white ; ");
             ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
 
         }else if  (item == "Light Mode"){
-            this->scribbleArea->setmode(false);
+            this->canvas->setmode(false);
             ui->menubar1->setStyleSheet("background-color:  #F0F1F3 ;color : black;");
             ui->toolBar1->setStyleSheet("background-color:  #F0F1F3 ; color: black ; ");
             ui->toolBar2->setStyleSheet("background-color:  #F0F1F3 ; color: black ;");
