@@ -22,7 +22,9 @@ void Rectangle::erase(QPainter &painter) const {
     int top = std::min(y1, y2);
     int right = std::max(x1, x2);
     int bottom = std::max(y1, y2);
-    painter.eraseRect(left, top, right - left, bottom - top);
+    painter.setCompositionMode(QPainter::CompositionMode_Clear);
+    painter.setPen(QPen(QColor(Qt::transparent), m_pen_width + 2));
+    painter.drawRect(left, top, right - left, bottom - top);
 }
 
 QRect Rectangle::boundingRect() const {

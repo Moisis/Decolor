@@ -27,7 +27,10 @@ MainWindow::MainWindow(QWidget *parent)
     canvas->setTool("None");
     ui->menubar1->setStyleSheet("background-color: #F0F1F3 ;");
     ui->toolBar2->setStyleSheet("background-color: #F0F1F3 ;");
-    canvas->setmode(false);
+    canvas->setmode(true);
+    ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :white ;");
+    ui->toolBar2->setStyleSheet(" background-color: #3B3C36 ;  color: white ; ");
+    ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
     QColorDialog *qtsd = new QColorDialog() ;
     qtsd->setWindowFlags(Qt::Widget);
     ui->toolBar2->addWidget(qtsd);
@@ -287,11 +290,10 @@ void MainWindow::on_actionUndo_triggered()
 
 void MainWindow::on_actionredo_triggered()
 {
-    if (!canvas->redoStack.empty()){
+//    if (!canvas->redoStack.empty()){
         canvas->redo();
         on_actionCursor_triggered();
-
-    }
+//    }
 }
 
 
