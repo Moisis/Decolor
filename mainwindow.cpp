@@ -15,6 +15,8 @@
 #include <QPushButton>
 #include <QCursor>
 #include <QSpinBox>
+#include <QLabel>
+#include <QShortcut>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
@@ -24,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(scribbleArea);
     scribbleArea->setTool("None");
     ui->menubar1->setStyleSheet("background-color: #F0F1F3 ;");
+    ui->toolBar2->setStyleSheet("background-color: #F0F1F3 ;");
     scribbleArea->setmode(false);
     QColorDialog *qtsd = new QColorDialog() ;
     qtsd->setWindowFlags(Qt::Widget);
@@ -37,11 +40,16 @@ MainWindow::MainWindow(QWidget *parent)
         scribbleArea->setPenColor(qtsd->currentColor());
     }
     );
+    QLabel *penwidthlbl = new QLabel(this);
+    penwidthlbl->setText("Pen width");
+    penwidthlbl->setStyleSheet("font-size: 20pt;");
+
+    ui->toolBar2->addWidget(penwidthlbl);
 
 
 
     QSpinBox *spinBox = new QSpinBox(this);
-    ui->toolBar1->addWidget(spinBox);
+    ui->toolBar2->addWidget(spinBox);
     spinBox->setRange(1,50);
     spinBox->connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), [spinBox ,this]()
                         {
@@ -107,6 +115,7 @@ void MainWindow::on_actionCircle_triggered()
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
        ui->actioneraser->setChecked(false);
+        this->setCursor(Qt::CrossCursor);
 
 }
 
@@ -193,7 +202,7 @@ void MainWindow::on_actioneraser_triggered()
     scribbleArea->setTool("eraser");
 
     QPixmap p = QPixmap(":/img/eraser.png");
-   QPixmap scaled = p.scaled(QSize(50, 50));
+   QPixmap scaled = p.scaled(QSize(40, 40));
     QCursor c = QCursor(scaled, 0, 0);
     this->setCursor(c);
 }
@@ -253,6 +262,7 @@ void MainWindow::on_actionPen_Width_triggered()
                                         1, 50, 1, &ok);
     if (ok)
         scribbleArea->setPenWidth(newWidth);
+
 }
 
 
@@ -313,14 +323,14 @@ void MainWindow::on_actionPreferences_triggered()
            if (item =="Dark Mode"){
                this->scribbleArea->setmode(true);
                ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :white ;");
-               ui->toolBar2->setStyleSheet("QToolBar{ background-color: #3B3C36 ; color: white ; window-text : white }");
+               ui->toolBar2->setStyleSheet(" background-color: #3B3C36 ;  color: white ; ");
                 ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
 
            }else if  (item == "Light Mode"){
                   this->scribbleArea->setmode(false);
-               ui->menubar1->setStyleSheet("background-color:  #F0F1F3 ;");
-               ui->toolBar1->setStyleSheet("background-color:  #F0F1F3 ; ");
-               ui->toolBar2->setStyleSheet("background-color:  #F0F1F3 ;");
+               ui->menubar1->setStyleSheet("background-color:  #F0F1F3 ;color : black;");
+               ui->toolBar1->setStyleSheet("background-color:  #F0F1F3 ; color: black ; ");
+               ui->toolBar2->setStyleSheet("background-color:  #F0F1F3 ; color: black ;");
            }
               }
 
