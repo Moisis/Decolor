@@ -24,3 +24,12 @@ void Rectangle::erase(QPainter &painter) const {
     int bottom = std::max(y1, y2);
     painter.eraseRect(left, top, right - left, bottom - top);
 }
+
+QRect Rectangle::boundingRect() const {
+    return QRect(m_start, m_end);
+}
+
+void Rectangle::drag(const QPoint &offset) {
+    m_start += offset;
+    m_end += offset;
+}

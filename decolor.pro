@@ -10,6 +10,7 @@ CONFIG += c++17
 SOURCES += \
     Shape.cpp \
     canvas.cpp \
+    cursor.cpp \
     ellipse.cpp \
     line.cpp \
     main.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     Shape.h \
     canvas.h \
+    cursor.h \
     ellipse.h \
     line.h \
     mainwindow.h \
