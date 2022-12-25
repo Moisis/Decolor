@@ -9,20 +9,20 @@ CONFIG += c++17
 
 SOURCES += \
     Shape.cpp \
+    canvas.cpp \
     ellipse.cpp \
     line.cpp \
     main.cpp \
     mainwindow.cpp \
-    rectangle.cpp \
-    scribblearea.cpp
+    rectangle.cpp
 
 HEADERS += \
     Shape.h \
+    canvas.h \
     ellipse.h \
     line.h \
     mainwindow.h \
     rectangle.h \
-    scribblearea.h \
     Stack.h \
     Queue.h
 

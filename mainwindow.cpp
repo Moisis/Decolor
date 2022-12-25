@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "scribblearea.h"
+#include "canvas.h"
 
 #include <QApplication>
 #include <QColorDialog>
@@ -20,7 +20,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
-  , scribbleArea(new ScribbleArea(this))
+  , scribbleArea(new Canvas)
 {
     ui->setupUi(this);
     this->setCentralWidget(scribbleArea);

@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-class ScribbleArea;
+class Canvas;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -68,6 +68,6 @@ private:
 
     Ui::MainWindow *ui;
 
-    ScribbleArea *scribbleArea;
+    Canvas *scribbleArea;
 };
 #endif // MAINWINDOW_H
