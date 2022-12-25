@@ -238,11 +238,6 @@ void MainWindow::on_actionSave_as_triggered()
 }
 
 
-void MainWindow::on_actionPrint_triggered()
-{
-scribbleArea->print();
-}
-
 
 void MainWindow::on_actionExit_triggered()
 {

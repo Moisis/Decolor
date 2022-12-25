@@ -8,12 +8,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Shape.cpp \
+    ellipse.cpp \
+    line.cpp \
     main.cpp \
     mainwindow.cpp \
+    rectangle.cpp \
     scribblearea.cpp
 
 HEADERS += \
+    Shape.h \
+    ellipse.h \
+    line.h \
     mainwindow.h \
+    rectangle.h \
     scribblearea.h \
     Stack.h \
     Queue.h
