@@ -47,6 +47,7 @@ void Canvas::setTool(std::string dShape) {
     } else if (dShape == "eraser"){
        tool = Tools::ERASER;
     } else if (dShape == "cursor"){
+
        tool = Tools::CURSOR;
     }
 }
