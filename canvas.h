@@ -19,13 +19,13 @@ class Canvas : public QWidget
 public:
     Canvas(QWidget *parent = nullptr);
     enum Tools {
-        Brush,
+        CURSOR,
+        BRUSH,
         Eraser,
         LINE,
-        Rect,
-        Circle,
-        Fill,
-        None,
+        RECT,
+        CIRCLE,
+        FILL,
     };
     Stack<QImage> undoStack;
     Stack<QImage> redoStack;
@@ -74,7 +74,7 @@ private:
 /* private members*/
 private:
     Queue<QPoint> points;
-    Tools tool = Tools::Rect;
+    Tools tool = Tools::RECT;
     bool scribbling = false;
     bool modified = false;
     bool isFloodFilling = false;
