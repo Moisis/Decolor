@@ -34,17 +34,17 @@ void Canvas::setTool(std::string dShape) {
     if (dShape == "line") {
        tool = Tools::LINE;
     } else if (dShape == "rect") {
-       tool = Tools::Rect;
+       tool = Tools::RECT;
     } else if (dShape == "circle") {
-       tool = Tools::Circle;
+       tool = Tools::CIRCLE;
     } else if (dShape == "free") {
-       tool = Tools::Brush;
+       tool = Tools::BRUSH;
     } else if(dShape == "fill"){
-       tool = Tools::Fill;
+       tool = Tools::FILL;
     } else if (dShape == "eraser"){
-       tool = Tools::Eraser;
+       tool = Tools::ERASER;
     } else {
-       tool = Tools::None;
+       tool = Tools::CURSOR;
     }
 }
 
@@ -106,7 +106,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
     scribbling = true;
     if (event->button() == Qt::LeftButton) {
         switch(tool) {
-            case Fill: {
+            case FILL: {
                 isFloodFilling = false;
                 undoStack.push(image);
                 lastPoint = event->pos();
@@ -117,7 +117,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 scribbling = true;
                 break;
             }
-            case Brush: {
+            case BRUSH: {
                 undoStack.push(image);
                 begin = event->pos();
                 dest = begin;
@@ -125,7 +125,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 scribbling = true;
                 break;
             }
-            case Eraser: {
+            case ERASER: {
                 undoStack.push(image);
                 begin = event->pos();
                 dest = begin;
@@ -137,11 +137,11 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 previewShape = new Line(begin, dest, myPenWidth);
                 break;
             }
-            case Rect: {
+            case RECT: {
                 previewShape =  new Rectangle(begin, dest, myPenWidth);
                 break;
             }
-            case Circle: {
+            case CIRCLE: {
                 previewShape =  new Ellipse(begin, dest, myPenWidth);
                 break;
             }
@@ -154,10 +154,10 @@ void Canvas::mousePressEvent(QMouseEvent *event)
 
 void Canvas::mouseMoveEvent(QMouseEvent *event)
 {
-    if(tool == Tools::Brush) {
+    if(tool == Tools::BRUSH) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             drawLineTo(event->pos(), myPenColor);
-    } else if(tool == Tools::Eraser) {
+    } else if(tool == Tools::ERASER) {
         if ((event->buttons() & Qt::LeftButton) && scribbling)
             erase(event->pos());
     } else {
@@ -173,7 +173,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
 void Canvas::mouseReleaseEvent(QMouseEvent *event)
 {
     QPainter painter(this);
-    if (tool == Tools::Brush) {
+    if (tool == Tools::BRUSH) {
         if (event->button() == Qt::LeftButton && scribbling) {
             drawLineTo(event->pos(), myPenColor);
             scribbling = false;
@@ -186,20 +186,20 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
             scribbling = false;
         }
     }
-    else if (tool == Tools::Rect) {
+    else if (tool == Tools::RECT) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
             addToShapes(new Rectangle(begin, dest, myPenWidth));
             update();
             scribbling = false;
 
         }
-    } else if (tool == Tools::Circle) {
+    } else if (tool == Tools::CIRCLE) {
         if ((event->button() & Qt::LeftButton) && scribbling) {
             addToShapes(new Ellipse(begin, dest, myPenWidth));
             update();
             scribbling = false;
         }
-    } else if(tool == Tools::Eraser) {
+    } else if(tool == Tools::ERASER) {
             erase(event->pos());
             scribbling = false;
     }
