@@ -8,7 +8,9 @@ void Ellipse::draw(QPainter &painter) const
 
 void Ellipse::erase(QPainter &painter) const {
     QRect rect(m_start, m_end);
-    painter.eraseRect(rect);
+    painter.setCompositionMode(QPainter::CompositionMode_Clear);
+    painter.setPen(QPen(QColor(Qt::transparent), m_pen_width + 2));
+    painter.drawEllipse(QRect(m_start, m_end));
 }
 
 QRect Ellipse::boundingRect() const {

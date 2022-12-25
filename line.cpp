@@ -8,7 +8,9 @@ void Line::draw(QPainter &painter) const
 
 void Line::erase(QPainter &painter) const
 {
-    painter.eraseRect(QRect(m_start, m_end));
+    painter.setCompositionMode(QPainter::CompositionMode_Clear);
+    painter.setPen(QPen(QColor(Qt::transparent), m_pen_width + 2));
+    painter.drawLine(m_start, m_end);
 }
 
 QRect Line::boundingRect() const {

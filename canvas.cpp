@@ -7,7 +7,6 @@
 #include<QRect>
 #include<QStack>
 
-#include "drawcommand.h"
 #include "rectangle.h"
 #include "ellipse.h"
 #include "line.h"
@@ -111,6 +110,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         switch(tool) {
             case FILL: {
+                isLastCommandShapeUndo.push(false);
                 deselect();
                 undoStack.push(image);
                 lastPoint = event->pos();
@@ -121,6 +121,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 break;
             }
             case BRUSH: {
+                isLastCommandShapeUndo.push(false);
                 deselect();
                 undoStack.push(image);
                 begin = event->pos();
@@ -130,6 +131,7 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 break;
             }
             case ERASER: {
+                isLastCommandShapeUndo.push(false);
                 deselect();
                 undoStack.push(image);
                 begin = event->pos();
@@ -320,27 +322,55 @@ void Canvas::deselect() {
 
 /*--------------------------------------------------------------------Misc------------------------------------------------------------------------*/
 void Canvas::undo() {
-    redoStack.push(image);
-    if (!undoStack.empty()) {
-        if (!shapes.empty()) {
+    if (isLastCommandShapeUndo.top()) {
+        if(!shapes.empty()) {
+            Shape* shape = shapes.back();
+            QPainter painter(&image);
+            shape->erase(painter);
+            shapesRedo.push_back(shape);
             shapes.pop_back();
+            update();
         }
-        image = undoStack.top();
-        undoStack.pop();
-        update();
-    } else{
-        modified = false ;
+    } else {
+        redoStack.push(image);
+        if (!undoStack.empty()) {
+            image = undoStack.top();
+            undoStack.pop();
+            update();
+        } else{
+            modified = false ;
+        }
+    }
+    if (!isLastCommandShapeUndo.empty()) {
+        isLastCommandShapeRedo.push(isLastCommandShapeUndo.top());
+        isLastCommandShapeUndo.pop();
     }
 }
 
 void Canvas::redo() {
-    undoStack.push(image);
-    if (!redoStack.empty()) {
-        image = redoStack.top();
-        update();
-        redoStack.pop();
+    if (isLastCommandShapeRedo.top()) {
+        if(!shapesRedo.empty()) {
+            Shape* shape = shapesRedo.back();
+            addToShapes(shape);
+            shapesRedo.pop_back();
+            update();
+        }
+    } else {
+        undoStack.push(image);
+        if (!redoStack.empty()) {
+            image = redoStack.top();
+            update();
+            redoStack.pop();
+        } else {
+            modified = false ;
+        }
+    }
+    if (!isLastCommandShapeRedo.empty()) {
+        isLastCommandShapeUndo.push(isLastCommandShapeRedo.top());
+        isLastCommandShapeRedo.pop();
     }
 }
+
 bool Canvas::openImage(const QString &fileName)
 {
     QImage loadedImage;
@@ -385,6 +415,7 @@ bool Canvas::isValidImageIndex(int x, int y) {
 }
 
 void Canvas::addToShapes(Shape* shape) {
+    isLastCommandShapeUndo.push(true);
     shapes.append(shape);
     undoStack.push(image);
     QPen pen(shape->color(), shape->penWidth(), Qt::SolidLine, Qt::RoundCap,

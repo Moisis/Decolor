@@ -90,6 +90,7 @@ private:
     bool modified = false;
     int myPenWidth = 3;
     QList<Shape*> shapes;
+    QList<Shape*> shapesRedo;
     QColor eventColor;
     QColor backgroundColor = QColor(255, 255, 255);
     QColor myPenColor = QColor(223, 42, 42);
@@ -98,6 +99,8 @@ private:
     QPoint dest = QPoint();
     QPoint lastPoint;
     Cursor cursor;
+    Stack<bool> isLastCommandShapeUndo;
+    Stack<bool> isLastCommandShapeRedo;
     Shape* previewShape;
 };
 
