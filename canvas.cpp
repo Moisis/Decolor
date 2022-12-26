@@ -48,6 +48,8 @@ void Canvas::setTool(std::string dShape) {
     } else if (dShape == "cursor"){
 
        tool = Tools::CURSOR;
+    }else if (dShape == "colorpick" ){
+        tool = Tools::ColorPick ;
     }
 }
 
@@ -155,7 +157,8 @@ void Canvas::mousePressEvent(QMouseEvent *event)
                 deselect();
                 previewShape =  new Ellipse(begin, dest, myPenWidth, myPenColor);
                 break;
-            }
+        }
+
             default: {
                 break;
             }
@@ -176,11 +179,18 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
         if (event->buttons() & Qt::LeftButton) {
             if (dragging) {
                 // Update the position of the selected shapes
+                QPainter painter(&image);
                 QPoint offset = event->pos() - dest;
                 clearImage();
                 for (Shape* shape : shapes) {
-                    if (shape->selected()) {
+                    if (shape->selected()  ) {
                         shape->drag(offset);
+
+
+                    }else{
+                            painter.setPen(QPen(shape->color(), shape->penWidth(), Qt::SolidLine, Qt::RoundCap,
+                                Qt::RoundJoin));
+                        shape->draw(painter);
                     }
                 }
                 update();
@@ -195,12 +205,16 @@ void Canvas::mouseMoveEvent(QMouseEvent *event)
             update();
         }
         dest = event->pos();
-    } else {
+    } else if (tool == Tools::ColorPick)
+    {
+
+    }else {
         if ((event->buttons() & Qt::LeftButton) && scribbling) {
             dest = event->pos();
             previewShape->setEndPoint(dest);
             update();
-        }
+
+    }
     }
 }
 
@@ -241,9 +255,17 @@ void Canvas::mouseReleaseEvent(QMouseEvent *event)
     } else if (tool == Tools::CURSOR) {
         select();
         update();
-        scribbling = false;
+   scribbling = false;
+
+
+    }else if (tool == Tools::ColorPick) {
+
+        this->setPenColor(image.pixelColor(event->pos()));
+
     }
+
 }
+
 
 /*---------------------------------------------------------------------Tools functions------------------------------------------------------------*/
 

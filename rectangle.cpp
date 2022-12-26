@@ -1,4 +1,5 @@
 #include "rectangle.h"
+#include "canvas.h"
 
 void Rectangle::draw(QPainter &painter) const
 {

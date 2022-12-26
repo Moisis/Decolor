@@ -13,6 +13,7 @@ public:
     virtual void erase(QPainter &painter) const = 0;
     virtual QRect boundingRect() const = 0;
     virtual void drag(const QPoint& offset) = 0;
+   //   virtual void resize(const QPoint& offset) = 0;
 
     // Getters
     int penWidth() const { return m_pen_width; }

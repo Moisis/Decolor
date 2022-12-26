@@ -12,5 +12,6 @@
         <file>img/redo.png</file>
         <file>img/splash.png</file>
         <file>img/chromatic.png</file>
+        <file>img/colordropper.png</file>
     </qresource>
 </RCC>

@@ -17,6 +17,8 @@
 #include <QSpinBox>
 #include <QLabel>
 #include <QShortcut>
+#include <QKeySequence>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) ,ui(new Ui::MainWindow)
@@ -28,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->menubar1->setStyleSheet("background-color: #F0F1F3 ;");
     ui->toolBar2->setStyleSheet("background-color: #F0F1F3 ;");
     canvas->setmode(true);
-    ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :white ;");
+    ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :black;");
     ui->toolBar2->setStyleSheet(" background-color: #3B3C36 ;  color: white ; ");
     ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
     QColorDialog *qtsd = new QColorDialog() ;
@@ -109,15 +111,40 @@ bool MainWindow::saveFile(const QByteArray &fileFormat)
     return canvas->saveImage(fileName, fileFormat.constData());
 }
 
-void MainWindow::on_actionCircle_triggered()
+
+void MainWindow::on_actioncolorfinder_triggered()
 {
-    canvas->setTool("circle");
-    ui->actionCursor->setChecked(false);
+    ui->actionCircle->setChecked(false);
     ui->actionSquare->setChecked(false);
     ui->actionLine->setChecked(false);
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
     ui->actioneraser->setChecked(false);
+      ui->actionCursor->setChecked(false);
+
+    canvas->setTool("colorpick");
+    QPixmap p = QPixmap(":/img/colordropper.png");
+    QPixmap scaled = p.scaled(QSize(50, 50));
+    QCursor c = QCursor(scaled, 0, 0);
+    this->setCursor(c);
+
+
+
+}
+
+
+
+
+void MainWindow::on_actionCircle_triggered()
+{
+    canvas->setTool("circle");
+    ui->actioncolorfinder->setChecked(false);
+    ui->actionSquare->setChecked(false);
+    ui->actionLine->setChecked(false);
+    ui->actionFill->setChecked(false);
+    ui->actionpencil->setChecked(false);
+    ui->actioneraser->setChecked(false);
+      ui->actionCursor->setChecked(false);
     this->setCursor(Qt::CrossCursor);
 
 }
@@ -131,6 +158,7 @@ void MainWindow::on_actionCursor_triggered()
     ui->actionFill->setChecked(false);
     ui->actionpencil->setChecked(false);
     ui->actioneraser->setChecked(false);
+     ui->actioncolorfinder->setChecked(false);
     canvas->setTool("cursor");
     this->setCursor(Qt::ArrowCursor);
 
@@ -145,6 +173,8 @@ void MainWindow::on_actionLine_triggered()
     ui->actionCircle->setChecked(false);
     ui->actionFill->setChecked(false);
     ui->actioneraser->setChecked(false);
+     ui->actioncolorfinder->setChecked(false);
+
     canvas->setTool("line");
     this->setCursor(Qt::CrossCursor);
 
@@ -160,6 +190,7 @@ void MainWindow::on_actionFill_triggered()
     ui->actionCircle->setChecked(false);
     ui->actionLine->setChecked(false);
     ui->actioneraser->setChecked(false);
+     ui->actioncolorfinder->setChecked(false);
     canvas->setTool("fill");
 
     QPixmap p = QPixmap(":/img/paint-bucket.png");
@@ -177,6 +208,7 @@ void MainWindow::on_actionSquare_triggered()
     ui->actionLine->setChecked(false);
     ui->actionpencil->setChecked(false);
     ui->actioneraser->setChecked(false);
+     ui->actioncolorfinder->setChecked(false);
     canvas->setTool("rect");
     this->setCursor(Qt::CrossCursor);
 }
@@ -189,6 +221,7 @@ void MainWindow::on_actionpencil_triggered()
     ui->actionFill->setChecked(false);
     ui->actionCursor->setChecked(false);
     ui->actioneraser->setChecked(false);
+     ui->actioncolorfinder->setChecked(false);
     canvas->setTool("free");
 
     this->setCursor(Qt::CrossCursor);
@@ -202,6 +235,7 @@ void MainWindow::on_actioneraser_triggered()
     ui->actionFill->setChecked(false);
     ui->actionCursor->setChecked(false);
     ui->actionpencil->setChecked(false);
+     ui->actioncolorfinder->setChecked(false);
     canvas->setTool("eraser");
 
     QPixmap p = QPixmap(":/img/eraser.png");
@@ -272,7 +306,7 @@ void MainWindow::on_actionPen_Width_triggered()
 void MainWindow::on_actionClear_Screen_triggered()
 {
     canvas->clearImage();
-    on_actionCursor_triggered();
+  //  on_actionCursor_triggered();
 }
 
 
@@ -324,7 +358,7 @@ void MainWindow::on_actionPreferences_triggered()
     if (ok1 && !item.isEmpty()){
         if (item =="Dark Mode"){
             this->canvas->setmode(true);
-            ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :white ;");
+            ui->toolBar1->setStyleSheet("background-color: #3B3C36 ; color :black ;");
             ui->toolBar2->setStyleSheet(" background-color: #3B3C36 ;  color: white ; ");
             ui->menubar1->setStyleSheet("QMenuBar {  background-color: #3B3C36 ; color : white; }");
 
@@ -334,8 +368,12 @@ void MainWindow::on_actionPreferences_triggered()
             ui->toolBar1->setStyleSheet("background-color:  #F0F1F3 ; color: black ; ");
             ui->toolBar2->setStyleSheet("background-color:  #F0F1F3 ; color: black ;");
         }
+        canvas->clearImage();
+
     }
 
 
 }
+
+
 

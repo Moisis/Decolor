@@ -179,6 +179,7 @@
    <addaction name="actionLine"/>
    <addaction name="actionSquare"/>
    <addaction name="actionCircle"/>
+   <addaction name="actioncolorfinder"/>
    <addaction name="actionFill"/>
    <addaction name="separator"/>
    <addaction name="actioncolorPicker"/>
@@ -393,6 +394,21 @@
    </property>
    <property name="text">
     <string>colorPicker</string>
+   </property>
+   <property name="toolTip">
+    <string>More Colors</string>
+   </property>
+  </action>
+  <action name="actioncolorfinder">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/img/colordropper.png</normaloff>:/img/colordropper.png</iconset>
+   </property>
+   <property name="text">
+    <string>colorfinder</string>
    </property>
    <property name="toolTip">
     <string>Color Picker</string>

@@ -64,6 +64,8 @@ private slots:
 
     void on_actioncolorPicker_triggered();
 
+    void on_actioncolorfinder_triggered();
+
 private:
 
     Ui::MainWindow *ui;

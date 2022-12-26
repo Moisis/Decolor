@@ -29,6 +29,7 @@ public:
         RECT,
         CIRCLE,
         FILL,
+        ColorPick,
     };
     bool picker= false ;
     bool dark = true;
@@ -58,6 +59,8 @@ public:
 
 public slots:
     void clearImage();
+    //
+     void deselect();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -72,7 +75,7 @@ private:
     void resizeImage(QImage *image, const QSize &newSize);
     void erase(const QPoint &endPoint);
     void select();
-    void deselect();
+
     void floodFill();
 
 
